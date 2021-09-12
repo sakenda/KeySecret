@@ -1,10 +1,6 @@
 ﻿using KeySecret.DataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System.Diagnostics;
-using KeySecret.DataAccess.Library.DataAccess;
-using System.Collections.Generic;
-using KeySecret.DataAccess.Library.Models;
 
 namespace KeySecret.DataAccess.Controllers
 {

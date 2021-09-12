@@ -1,32 +1,32 @@
 using KeySecret.DataAccess.Data;
-using KeySecret.DataAccess.Library.DataAccess;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
+using KeySecret.DataAccess.Library.Accounts.Models;
+using KeySecret.DataAccess.Library.Accounts.Repositories;
+using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace KeySecret.DataAccess
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+        public string ConnectionString { get; set; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            ConnectionString = Configuration.GetConnectionString("KeySecretData");
+
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("KeySecretData")));
 
-            services.AddSingleton<IAccountsData, AccountsData>();
+            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

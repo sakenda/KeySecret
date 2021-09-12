@@ -1,8 +1,6 @@
-﻿using KeySecret.DataAccess.Library.DataAccess;
-using KeySecret.DataAccess.Library.Models;
+﻿using KeySecret.DataAccess.Library.Accounts.Models;
+using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace KeySecret.DataAccess.Controllers
 {
@@ -10,47 +8,43 @@ namespace KeySecret.DataAccess.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IAccountsData _accountsDataAccess;
+        private readonly IRepository<AccountModel> _accountsRepository;
 
-        public AccountsController(IAccountsData credentialDataAccess)
+        public AccountsController(IRepository<AccountModel> accountsRepository)
         {
-            _accountsDataAccess = credentialDataAccess;
+            _accountsRepository = accountsRepository;
         }
 
         // GET: /api/accounts/
         [HttpGet]
-        public List<AccountModel> Get()
+        public async Task<List<AccountModel>> Get()
         {
-            return _accountsDataAccess.GetAccessDataModels();
+            return await _accountsRepository.GetItemsAsync();
         }
 
         // GET: /api/accounts/{id}
         [HttpGet("{id}")]
-        public AccountModel GetById(int id)
+        public async Task<AccountModel> GetById(int id)
         {
-            return _accountsDataAccess.GetAccessDataModels().FirstOrDefault(x => x.Id == id);
+            return await _accountsRepository.GetItemAsync(id);
         }
 
-        // GET: /api/accounts/name/{name}
-        [HttpGet("name/{name}")]
-        public AccountModel GetByName(string name)
+        [HttpPost("/ins/")]
+        public async void Post(AccountModel account)
         {
-            return _accountsDataAccess.GetAccessDataModels().FirstOrDefault(x => x.Name == name);
+            await _accountsRepository.InsertItemAsync(account);
         }
 
-        [HttpPost]
-        public void Post(AccountModel account)
+        [HttpPut("/upd/{id}")]
+        public async void Put(int id, AccountModel account)
         {
+            await _accountsRepository.UpdateItemAsync(account);
         }
 
-        [HttpPut("{id}")]
-        public void Put(int id, AccountModel account)
+        [HttpDelete("/del/{id}")]
+        public async void Delete(int id)
         {
-        }
-
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await _accountsRepository.DeleteItemAsync(id);
         }
     }
 }

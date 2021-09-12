@@ -1,7 +1,5 @@
-﻿@using KeySecret.DataAccess.Library.DataAccess;
-@{
+﻿@{
     ViewData["Title"] = "Home Page";
-    var accountsData = new AccountsData();
 }
 
 <div class="text-center">
@@ -9,11 +7,4 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 
-    @{
-
-        foreach (var item in accountsData.GetAccessDataModels())
-        {
-            <p>@item.Name - @item.WebAdress: @item.Password</p>
-        }
-    }
 </div>

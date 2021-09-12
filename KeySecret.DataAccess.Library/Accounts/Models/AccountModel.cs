@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace KeySecret.DataAccess.Library.Models
+﻿namespace KeySecret.DataAccess.Library.Accounts.Models
 {
     public class AccountModel
     {

@@ -1,42 +1,144 @@
-﻿using Dapper;
-using System.Collections.Generic;
-using System.Data;
+﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using System.Data.SqlClient;
-using System.Linq;
 
 namespace KeySecret.DataAccess.Library.Internal
 {
     internal class SqlDataAccess
     {
-        private IDbConnection _connection;
-
-        public string ConnectionString
-            => @"Server=DESKTOP-9QI02R2\LOCALSQLSERVER;DATABASE=KeySecretDB;Integrated Security=True;Persist Security Info=False;Pooling=False;MultipleActiveResultSets=False;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False";
-
-        public List<T> LoadData<T, U>(string storedProcedure, U parameters)
+        /// <summary>
+        /// Executes a database query
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameters">Parameters for executing the query</param>
+        /// <returns>Void</returns>
+        public async Task ExecuteQueryVoidAsync(string connectionString, string sql, DbParameter[] parameters = null)
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                List<T> rows = connection.Query<T>(
-                    storedProcedure,
-                    parameters,
-                    commandType: CommandType.StoredProcedure
-                ).ToList();
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
 
-                return rows;
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                }
+
+                await cmd.ExecuteNonQueryAsync();
             }
         }
+        /// <summary>
+        /// Executes a database query
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameter">A single parameter for executing the query</param>
+        /// <returns>Void</returns>
+        public async Task ExecuteQueryVoidAsync(string connectionString, string sql, DbParameter parameter = null)
+            => await ExecuteQueryVoidAsync(connectionString, sql, new DbParameter[] { parameter });
 
-        public void SaveData<T>(string storedProcedure, T parameters)
+        /// <summary>
+        /// Executes a database query and returns the table
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameters">Parameters for executing the query</param>
+        /// <returns>List of AccountModels</returns>
+        public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, DbParameter[] parameters = null)
         {
-            using (IDbConnection connection = new SqlConnection(ConnectionString))
+            SqlConnection conn = new SqlConnection(connectionString);
             {
-                connection.Execute(
-                    storedProcedure,
-                    parameters,
-                    commandType: CommandType.StoredProcedure
-                );
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                    {
+                        if (parameter == null)
+                            continue;
+
+                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                    }
+                }
+
+                var list = new List<AccountModel>();
+                var query = await cmd.ExecuteReaderAsync();
+
+                while (query.Read())
+                {
+                    list.Add(new AccountModel
+                    {
+                        Id = Convert.ToInt32(query["Id"]),
+                        Name = query["Name"].ToString(),
+                        WebAdress = query["WebAdress"].ToString(),
+                        Password = query["Password"].ToString(),
+                        CreatedDate = Convert.ToDateTime(query["CreatedDate"])
+                    });
+                }
+
+                return list;
             }
         }
+        /// <summary>
+        /// Executes a database query and returns the table
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameter">A single parameter for executing the query</param>
+        /// <returns>List of AccountModels</returns>
+        public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, DbParameter parameters = null)
+            => await ExecuteQueryGetItems(connectionString, sql, new DbParameter[] { parameters });
+
+        /// <summary>
+        /// Executes a database query and returns a AccountModel
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameters">Parameters for executing the query</param>
+        /// <returns>AccountModel</returns>
+        public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, DbParameter[] parameters = null)
+        {
+            SqlConnection conn = new SqlConnection(connectionString);
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                    {
+                        if (parameter == null)
+                            continue;
+
+                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                    }
+                }
+
+                var model = new AccountModel();
+                var query = await cmd.ExecuteReaderAsync();
+
+                while (query.Read())
+                {
+                    model.Id = Convert.ToInt32(query["Id"]);
+                    model.Name = query["Name"].ToString();
+                    model.WebAdress = query["WebAdress"].ToString();
+                    model.Password = query["Password"].ToString();
+                    model.CreatedDate = Convert.ToDateTime(query["CreatedDate"]);
+                }
+
+                return model;
+            }
+        }
+        /// <summary>
+        /// Executes a database query and returns a AccountModel
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameter">A single parameters for executing the query</param>
+        /// <returns>AccountModel</returns>
+        public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, DbParameter parameter = null)
+            => await ExecuteQueryGetItem(connectionString, sql, new DbParameter[] { parameter });
     }
 }

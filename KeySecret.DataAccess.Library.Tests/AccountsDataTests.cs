@@ -1,9 +1,4 @@
-﻿using KeySecret.DataAccess.Library.DataAccess;
-using KeySecret.DataAccess.Library.Models;
-using Moq;
-using System;
-using System.Collections.Generic;
-using Xunit;
+﻿using Xunit;
 
 namespace KeySecret.DataAccess.Library.Tests
 {
