@@ -11,36 +11,43 @@
              d:DesignHeight="450"
              d:DesignWidth="800">
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>            
         </Grid.RowDefinitions>
-
-        <StackPanel Grid.Row="1" Grid.Column="1"
-                    Orientation="Vertical"
-                    Width="350">
-
-            <TextBlock Text="keySECRET"
-                       FontSize="54"
-                       FontWeight="UltraLight"
-                       Margin="0 0 0 30"
-                       HorizontalAlignment="Center"/>
-
-            <DockPanel Margin="5">
-                <TextBlock Text="Login" Width="80"/>
-                <TextBox/>
-            </DockPanel>
-
-            <DockPanel Margin="5">
-                <TextBlock Text="Password" Width="80"/>
-                <TextBox/>
-            </DockPanel>
-        </StackPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Viewbox>
+                <TextBlock Margin="5" >keySECRET</TextBlock>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <DockPanel Grid.Column="0" Margin="5">
+                        <StackPanel DockPanel.Dock="Left" Margin="5">
+                            <TextBlock Name="_usernameLabel">Username:</TextBlock>
+                            <TextBlock Name="_passwordLabel">Password:</TextBlock>
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right" Margin="5">
+                            <TextBox Width="{Binding ElementName=_usernameLabel , Path=ActualWidth}" Height="{Binding ElementName=_usernameLabel, Path=ActualHeight}"></TextBox>
+                            <PasswordBox Width="{Binding ElementName=_passwordLabel, Path=ActualWidth}" Height="{Binding ElementName=_passwordLabel, Path=ActualHeight}"></PasswordBox>
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+            </Viewbox>
+        </Grid>
     </Grid>
+    
 </UserControl>
