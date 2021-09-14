@@ -8,46 +8,52 @@
              Background="White"
              FontFamily="Corbel"
              FontSize="18"
-             d:DesignHeight="450"
+             d:DesignHeight="600"
              d:DesignWidth="800">
+
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="3*"/>
-            <RowDefinition Height="*"/>            
-        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <Grid Grid.Row="1" Grid.Column="1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Viewbox>
-                <TextBlock Margin="5" >keySECRET</TextBlock>
-            </Viewbox>
-            <Viewbox Grid.Row="1" Grid.Column="1">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <DockPanel Grid.Column="0" Margin="5">
-                        <StackPanel DockPanel.Dock="Left" Margin="5">
-                            <TextBlock Name="_usernameLabel">Username:</TextBlock>
-                            <TextBlock Name="_passwordLabel">Password:</TextBlock>
-                        </StackPanel>
-                        <StackPanel DockPanel.Dock="Right" Margin="5">
-                            <TextBox Width="{Binding ElementName=_usernameLabel , Path=ActualWidth}" Height="{Binding ElementName=_usernameLabel, Path=ActualHeight}"></TextBox>
-                            <PasswordBox Width="{Binding ElementName=_passwordLabel, Path=ActualWidth}" Height="{Binding ElementName=_passwordLabel, Path=ActualHeight}"></PasswordBox>
-                        </StackPanel>
-                    </DockPanel>
-                </Grid>
-            </Viewbox>
-        </Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="1" Grid.Column="1">
+            <TextBlock
+                Margin="10"
+                FontSize="90"
+                >keySECRET</TextBlock>
+            <TextBox
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                FontSize="24"
+                Name="UsernameBox"
+                Width="250"
+                Margin="10"
+                GotFocus="UsernameBox_GotFocus"
+                Text="Username"
+                Foreground="Gray" 
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                
+                ></TextBox>
+            <PasswordBox
+                Name="PasswordBox"
+                FontSize="24"
+                Password="123456"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                MinWidth="{Binding ElementName=UsernameBox, Path=ActualWidth}"
+                HorizontalContentAlignment="Center" 
+                VerticalContentAlignment="Center"
+                GotFocus="PasswordBox_GotFocus"
+                ></PasswordBox>
+        </StackPanel>        
     </Grid>
-    
 </UserControl>
