@@ -1,7 +1,9 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
 using KeySecret.DataAccess.Library.Internal;
+using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Library.Accounts.Repositories
 {
@@ -65,6 +67,5 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
             await _dataAccess.ExecuteQueryVoidAsync(_connectionString, sql, parameter);
         }
-
     }
 }

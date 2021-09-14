@@ -1,4 +1,7 @@
-﻿namespace KeySecret.DataAccess.Library.Interfaces
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace KeySecret.DataAccess.Library.Interfaces
 {
     public interface IRepository<T>
     {
