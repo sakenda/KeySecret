@@ -14,5 +14,10 @@ namespace KeySecret.DesktopApp
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Categorie_Area.Items.Add(ShowDialog)
+        }
     }
 }

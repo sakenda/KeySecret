@@ -25,8 +25,7 @@ namespace KeySecret.DesktopApp.Views
         public LoginView()
         {
             InitializeComponent();
-            UsernameBox.GotFocus += new RoutedEventHandler(UsernameBox_GotFocus);
-            PasswordBox.GotFocus += new RoutedEventHandler(PasswordBox_GotFocus);
+           
         }
 
 
