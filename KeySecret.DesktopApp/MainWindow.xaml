@@ -9,13 +9,33 @@
         WindowStartupLocation="CenterScreen"
         Height="450"
         Width="800">
-    <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="File">
-                <MenuItem Header="Exit" Click="Exit_Click"/>
-            </MenuItem>
-        </Menu>
+    <Grid>
 
-        <ContentControl x:Name="MainContentControl"/>
-    </DockPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="80" Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <!-- Categorie Area-->
+        <ListBox Grid.RowSpan="2" Name="Categorie_Area">
+            <ListBoxItem 
+                Name="Allgemein" Content="Allgemein"/>
+        </ListBox>
+
+        <!-- Data Area-->
+        <ListBox Grid.Column="1" Grid.RowSpan="2">
+        
+        </ListBox>
+
+        <!-- Button Area-->
+        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+            <Button Name="addButton" Content="Hinzufügen" Click="add"/>
+            <Button Name="removeButton" Content="Entfernen" Click="remove" />
+        </StackPanel>
+
+    </Grid>
 </Window>

@@ -13,8 +13,9 @@ namespace KeySecret.DesktopApp.Views
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LoginView : UserControl, INotifyPropertyChanged
+    public partial class LoginView : UserControl
     {
+      /*
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _loginString;
@@ -27,13 +28,11 @@ namespace KeySecret.DesktopApp.Views
                 OnPropertyChanged(nameof(LoginString));
             }
         }
-
+        */
         public LoginView()
         {
             InitializeComponent();
-
-            UsernameBox.GotFocus += new RoutedEventHandler(UsernameBox_GotFocus);
-            PasswordBox.GotFocus += new RoutedEventHandler(PasswordBox_GotFocus);
+           // this.DataContext = this;
         }
 
         private void UsernameBox_GotFocus(object sender, RoutedEventArgs e)
@@ -50,14 +49,15 @@ namespace KeySecret.DesktopApp.Views
             PasswordBox.Foreground = new SolidColorBrush(Colors.Black);
             PasswordBox.Clear();
 
-            this.DataContext = this;
+            
         }
-
+        /*
         protected void OnPropertyChanged(string propertyname) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             LoginString = "TestString";
         }
+        */
     }
 }
