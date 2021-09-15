@@ -12,7 +12,6 @@
              d:DesignWidth="800">
 
     <Grid>
-
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
             <ColumnDefinition Width="*"/>
@@ -24,28 +23,34 @@
             <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="1" Grid.Column="1"
-                    Orientation="Vertical"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center">
-
-            <TextBlock Text="keySECRET"
-                       Margin="0 0 0 20"
-                       FontSize="64"/>
-
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                <TextBlock Text="Login" Width="80"/>
-                <TextBox Text="{Binding LoginString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="250"/>
-            </StackPanel>
-
-            <StackPanel Orientation="Horizontal" Margin="0 0 0 5">
-                <TextBlock Text="Password" Width="80"/>
-                <TextBox Width="250"/>
-            </StackPanel>
-
-            <Button Content="Login" Width="80" HorizontalAlignment="Right" Click="Button_Click"/>
-
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <TextBlock
+                Margin="10"
+                FontSize="90"
+                >keySECRET</TextBlock>
+            <TextBox
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                FontSize="24"
+                Name="UsernameBox"
+                Width="250"
+                Margin="10"
+                GotFocus="UsernameBox_GotFocus"
+                Text="Username"
+                Foreground="Gray"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"/>
+            <PasswordBox
+                Name="PasswordBox"
+                FontSize="24"
+                Password="123456"
+                Foreground="Gray"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                MinWidth="{Binding ElementName=UsernameBox, Path=ActualWidth}"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"
+                GotFocus="PasswordBox_GotFocus"/>
         </StackPanel>
-  
     </Grid>
 </UserControl>
