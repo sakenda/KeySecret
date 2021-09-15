@@ -12,6 +12,11 @@
              d:DesignWidth="800">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="auto"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
@@ -20,8 +25,8 @@
 
         <StackPanel Grid.Row="1" Grid.Column="1">
             <TextBlock
-            VerticalAlignment="Center"
-            HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
                 Margin="10"
                 FontSize="90"
                 >keySECRET</TextBlock>
@@ -32,17 +37,14 @@
                 Name="UsernameBox"
                 Width="250"
                 Margin="10"
-                Text="Username"
-                Foreground="Gray" 
-                HorizontalContentAlignment="Center" 
-                VerticalContentAlignment="Center"
                 GotFocus="UsernameBox_GotFocus"
-
-                ></TextBox>
+                Text="Username"
+                Foreground="Gray"
+                HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center"/>
             <PasswordBox
                 Name="PasswordBox"
                 FontSize="24"
-                Width="250"
                 Password="123456"
                 Foreground="Gray"
                 VerticalAlignment="Center"

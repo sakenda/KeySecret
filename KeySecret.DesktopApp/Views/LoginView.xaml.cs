@@ -1,5 +1,4 @@
-
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace KeySecret.DesktopApp.Views
     /// </summary>
     public partial class LoginView : UserControl
     {
-        /*
+      /*
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _loginString;
@@ -36,7 +35,6 @@ namespace KeySecret.DesktopApp.Views
            // this.DataContext = this;
         }
 
-
         private void UsernameBox_GotFocus(object sender, RoutedEventArgs e)
         {
             UsernameBox.Foreground = new SolidColorBrush(Colors.Black);
@@ -44,7 +42,6 @@ namespace KeySecret.DesktopApp.Views
             {
                 UsernameBox.Text = null;
             }
-
         }
 
         private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
