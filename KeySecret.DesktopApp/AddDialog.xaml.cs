@@ -36,5 +36,15 @@ namespace KeySecret.DesktopApp
             KategorieBox.Foreground = new SolidColorBrush(Colors.Black);
             KategorieBox.Clear();
         }
+
+        private void KeyDown_Enter(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Return)
+            {
+                MainWindow._categorie = KategorieBox.Text;
+                Close();
+            }
+
+        }
     }
 }

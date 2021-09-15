@@ -25,6 +25,9 @@ namespace KeySecret.DesktopApp
 
         private void remove(object sender, RoutedEventArgs e)
         {
+            if (Categorie_Area.SelectedItem.Equals(Allgemein)){
+                return;
+            }
             Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
         }
 
