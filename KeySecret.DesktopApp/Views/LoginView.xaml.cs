@@ -6,17 +6,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.ComponentModel;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace KeySecret.DesktopApp.Views
 {
     /// <summary>
     /// Interaction logic for LoginView.xaml
     /// </summary>
-    public partial class LoginView : UserControl, INotifyPropertyChanged
+    public partial class LoginView : UserControl
     {
-
+        /*
         public event PropertyChangedEventHandler PropertyChanged;
 
         private string _loginString;
@@ -29,11 +29,11 @@ namespace KeySecret.DesktopApp.Views
                 OnPropertyChanged(nameof(LoginString));
             }
         }
-
+        */
         public LoginView()
         {
             InitializeComponent();
-           
+           // this.DataContext = this;
         }
 
 
@@ -52,14 +52,15 @@ namespace KeySecret.DesktopApp.Views
             PasswordBox.Foreground = new SolidColorBrush(Colors.Black);
             PasswordBox.Clear();
 
-            this.DataContext = this;
+            
         }
-
+        /*
         protected void OnPropertyChanged(string propertyname) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
 
-        private void Button_Click(object sender, System.Windows.RoutedEventArgs e)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             LoginString = "TestString";
         }
+        */
     }
 }
