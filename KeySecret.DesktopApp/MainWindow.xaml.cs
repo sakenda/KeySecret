@@ -1,4 +1,5 @@
-﻿using KeySecret.DesktopApp.Views;
+﻿using KeySecret.DesktopApp.Library.DataAccess;
+using KeySecret.DesktopApp.Library.Models;
 using System;
 using System.Windows;
 using System.Windows.Input;
@@ -8,15 +9,17 @@ namespace KeySecret.DesktopApp
     public partial class MainWindow : Window
     {
         public static string _categorie { get; set; }
-        public MainWindow()
+        private IAccountEndpoint _accountEndpoint;
+
+        public MainWindow(IAccountEndpoint accountEndpoint)
         {
             InitializeComponent();
-
-            //MainContentControl.Content = new LoginView();
+            _accountEndpoint = accountEndpoint;
+            //AccountsList = new List<AccountModel>(_accountEndpoint.GetAllAccounts().Result);
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
-
+        
         private void add(object sender, RoutedEventArgs e)
         {
             AddDialog _dialogBox = new AddDialog();
