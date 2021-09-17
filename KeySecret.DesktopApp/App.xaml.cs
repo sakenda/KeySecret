@@ -8,9 +8,6 @@ using System.IO;
 
 namespace KeySecret.DesktopApp
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public IServiceProvider ServiceProvider { get; private set; }
