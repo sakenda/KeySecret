@@ -19,7 +19,7 @@ namespace KeySecret.DesktopApp
     /// </summary>
     public partial class AddDialog : Window
     {
-        
+
         public AddDialog()
         {
             InitializeComponent();
@@ -39,7 +39,7 @@ namespace KeySecret.DesktopApp
 
         private void KeyDown_Enter(object sender, KeyEventArgs e)
         {
-            if(e.Key == Key.Return)
+            if (e.Key == Key.Return)
             {
                 MainWindow._categorie = KategorieBox.Text;
                 Close();

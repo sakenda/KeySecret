@@ -6,36 +6,48 @@
         xmlns:local="clr-namespace:KeySecret.DesktopApp"
         mc:Ignorable="d"
         Title="KeySecret"
-        WindowStartupLocation="CenterScreen"
         Height="450"
-        Width="800">
-    <Grid>
+        Width="800"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource {x:Type Window}}"
+        >
+    <!-- ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="True"
+        Background="Transparent"-->
+    <Window.Resources>
 
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="auto"/>
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="80" Width="Auto"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <!-- Categorie Area-->
-        <ListBox Grid.RowSpan="2" Name="Categorie_Area">
-            <ListBoxItem 
+    </Window.Resources>
+    <Border>
+        <Grid>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="80" Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <!-- Categorie Area-->
+            <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
+                <ListBoxItem 
                 Name="Allgemein" Content="Allgemein"/>
-        </ListBox>
+            </ListBox>
 
-        <!-- Data Area-->
-        <ListBox Grid.Column="1" Grid.RowSpan="2">
-        
-        </ListBox>
+            <!-- Data Area-->
+            <ListBox Margin="10" Grid.Column="1" Grid.RowSpan="2">
 
-        <!-- Button Area-->
-        <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-            <Button Name="addButton" Content="Hinzufügen" Click="add"/>
-            <Button Name="removeButton" Content="Entfernen" Click="remove" />
-        </StackPanel>
+            </ListBox>
 
-    </Grid>
+            <!-- Button Area-->
+            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
+                <Button Content="Hinzufügen" Click="add" />
+                <Button Content="Entfernen" Click="remove" />
+            </StackPanel>
+            <Button Grid.Column="1" Grid.Row="2" Name="Quit" Content="Quit" Click="Quit_Click" HorizontalAlignment="Right"/>
+
+        </Grid>
+    </Border>
 </Window>
+    

@@ -5,5 +5,52 @@
              StartupUri="MainWindow.xaml">
 
     <Application.Resources>
+
+        <!-- Button Style-->
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="LightGray"/>
+            <Setter Property="Margin" Value="10 10 10 10"/>
+            <Setter Property="Width" Value="70"/>
+            <Setter Property="Height" Value="30"/>
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="8"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <!-- Window Style-->
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="WindowStyle" Value="None"/>
+            <Setter Property="AllowsTransparency" Value="True"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="ResizeMode" Value="CanResizeWithGrip"/>
+            <Style.Resources>
+                <Style TargetType="{x:Type Border}">
+                    <Setter Property="CornerRadius" Value="20"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="2"/>
+                    <Setter Property="Background" Value="White"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+
+        <!-- Listbox Style-->
+        <Style TargetType="ListBox">
+            <Style.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="Background" Value="Transparent"/>
+                </Style>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="Margin" Value="5"/>
+                    <Setter Property="BorderBrush" Value="Black"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                </Style>
+            </Style.Resources>
+        </Style>
     </Application.Resources>
 </Application>
