@@ -10,6 +10,7 @@
         Width="800"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource {x:Type Window}}"
+        MouseDown="Window_MouseDown"
         >
     <!-- ResizeMode="CanResizeWithGrip"
         AllowsTransparency="True"
@@ -17,13 +18,14 @@
     <Window.Resources>
 
     </Window.Resources>
+    
     <Border>
         <Grid>
 
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition MinWidth="80" Width="Auto"/>

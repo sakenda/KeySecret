@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 
 namespace KeySecret.DesktopApp.Views
@@ -56,12 +57,18 @@ namespace KeySecret.DesktopApp.Views
         {
             Close();
         }
+
+        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
+        }
         /*
 protected void OnPropertyChanged(string propertyname) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
 
 private void Button_Click(object sender, RoutedEventArgs e)
 {
-   LoginString = "TestString";
+LoginString = "TestString";
 }
 */
     }
