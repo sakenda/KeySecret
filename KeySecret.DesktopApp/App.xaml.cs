@@ -18,12 +18,6 @@ namespace KeySecret.DesktopApp
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsetting.json", optional: false, reloadOnChange: true);
-
-            Configuration = builder.Build();
-
             var serviceCollection = new ServiceCollection();
             ConfigureServices(serviceCollection);
 

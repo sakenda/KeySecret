@@ -22,9 +22,7 @@ namespace KeySecret.DesktopApp
         {
             InitializeComponent();
             _accountEndpoint = accountEndpoint;
-            AccountsList = new List<AccountModel>(_accountEndpoint.GetAllAccounts().Result);
-
-            //MainContentControl.Content = new LoginView();
+            //AccountsList = new List<AccountModel>(_accountEndpoint.GetAllAccounts().Result);
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
