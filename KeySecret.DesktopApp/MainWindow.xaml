@@ -22,20 +22,20 @@
         </Grid.ColumnDefinitions>
         <!-- Categorie Area-->
         <ListBox Grid.RowSpan="2" Name="Categorie_Area">
-            <ListBoxItem 
+            <ListBoxItem
                 Name="Allgemein" Content="Allgemein"/>
         </ListBox>
 
         <!-- Data Area-->
         <ListBox Grid.Column="1" Grid.RowSpan="2">
-        
         </ListBox>
 
         <!-- Button Area-->
         <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
             <Button Name="addButton" Content="Hinzufügen" Click="add"/>
-            <Button Name="removeButton" Content="Entfernen" Click="remove" />
+            <Button Name="removeButton" Content="Entfernen" Click="remove"/>
         </StackPanel>
 
+        <DataGrid Grid.Row="1" Grid.Column="1" ItemsSource="{Binding AccountsList}"/>
     </Grid>
 </Window>
