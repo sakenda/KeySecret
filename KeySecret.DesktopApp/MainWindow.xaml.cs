@@ -26,19 +26,14 @@ namespace KeySecret.DesktopApp
 
         private void remove(object sender, RoutedEventArgs e)
         {
-            try
-            {
 
-                if (Categorie_Area.SelectedItem.Equals(Allgemein))
-                {
-                    return;
-                }
-                Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
-            }
-            catch (NullReferenceException)
+            if (Categorie_Area.SelectedItem == null || Categorie_Area.SelectedItem.Equals(Allgemein))
             {
                 return;
             }
+            Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
+
+
 
         }
         private void Quit_Click(object sender, RoutedEventArgs e)
@@ -46,10 +41,5 @@ namespace KeySecret.DesktopApp
             Close();
         }
 
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
     }
 }

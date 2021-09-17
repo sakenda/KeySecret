@@ -9,12 +9,8 @@
         Height="450"
         Width="800"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource {x:Type Window}}"
-        MouseDown="Window_MouseDown"
-        >
-    <!-- ResizeMode="CanResizeWithGrip"
-        AllowsTransparency="True"
-        Background="Transparent"-->
+        Style="{StaticResource {x:Type Window}}">
+    
     <Window.Resources>
 
     </Window.Resources>
@@ -33,8 +29,8 @@
             </Grid.ColumnDefinitions>
             <!-- Categorie Area-->
             <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
-                <ListBoxItem 
-                Name="Allgemein" Content="Allgemein"/>
+                <ListBoxItem Content="Allgemein" Name="Allgemein" />
+
             </ListBox>
 
             <!-- Data Area-->
