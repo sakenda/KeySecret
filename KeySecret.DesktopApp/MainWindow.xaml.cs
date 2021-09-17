@@ -9,7 +9,9 @@ namespace KeySecret.DesktopApp
     public partial class MainWindow : Window
     {
         public static string _categorie { get; set; }
-        public MainWindow()
+        private IAccountEndpoint _accountEndpoint;
+
+        public MainWindow(IAccountEndpoint accountEndpoint)
         {
             InitializeComponent();
             _accountEndpoint = accountEndpoint;
