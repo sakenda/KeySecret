@@ -5,19 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:KeySecret.DesktopApp"
         mc:Ignorable="d"
-        Title="AddDialog" Height="200" Width="400"
-        WindowStyle="None"
+        Title="AddDialog"
         WindowStartupLocation="CenterScreen"
-        VerticalAlignment="Center"
-        HorizontalAlignment="Center">
-    
+        Height="200"
+        Width="400"
+        Style="{StaticResource {x:Type Window}}"
+        MouseDown="Window_MouseDown">
     <Grid>
-        <StackPanel>
-            <Label Content="Kategorie hinzufügen"
+        <Border>
+            <StackPanel>
+                <Label Content="Kategorie hinzufügen"
                    HorizontalAlignment="Center"
                    FontSize="36"
                    Margin="15"/>
-            <TextBox Name="KategorieBox"
+                <TextBox Name="KategorieBox"
                      Text="Kategorie"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
@@ -27,7 +28,9 @@
                      Width="250"
                      FontSize="26"
                      Margin="0 0 0 15"/>
-            <Button Content="Hinzufügen" Width="80" Click="Button_Click"/>
-        </StackPanel>
+                <Button Content="Hinzufügen" Width="80" Click="Button_Click"/>
+            </StackPanel>
+        </Border>
     </Grid>
 </Window>
+
