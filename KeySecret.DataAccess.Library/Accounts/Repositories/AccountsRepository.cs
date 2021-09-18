@@ -1,8 +1,10 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
 using KeySecret.DataAccess.Library.Internal;
+using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Library.Accounts.Repositories
@@ -20,7 +22,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
         public async Task<AccountModel> GetItemAsync(int id)
         {
-            string sql = "SELECT * FROM Accounts WHERE Id=@Id";
+            string sql = "SELECT * FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
             var parameter = new DbParameter("Id", SqlDbType.Int, id);
 
             var model = await _dataAccess.ExecuteQueryGetItem(_connectionString, sql, parameter);
@@ -29,7 +31,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
         public async Task<List<AccountModel>> GetItemsAsync()
         {
-            string sql = "SELECT * FROM Accounts";
+            string sql = "SELECT * FROM KeySecretDB.dbo.Accounts";
             DbParameter parameter = null;
 
             var list = await _dataAccess.ExecuteQueryGetItems(_connectionString, sql, parameter);
@@ -38,8 +40,9 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
         public async Task UpdateItemAsync(AccountModel item)
         {
-            string sql = "UPDATE INTO Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
+            string sql = "UPDATE KeySecretDB.dbo.Accounts SET [Name] = @Name, [WebAdress] = @WebAdress, [Password] = @Password WHERE [Id] = @Id";
             var parameters = new DbParameter[] {
+                new DbParameter("@Id", SqlDbType.NVarChar, item.Id),
                 new DbParameter("@Name", SqlDbType.NVarChar, item.Name),
                 new DbParameter("@WebAdress", SqlDbType.NVarChar, item.WebAdress),
                 new DbParameter("@Password", SqlDbType.NVarChar, item.Password)
@@ -50,7 +53,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
         public async Task InsertItemAsync(AccountModel item)
         {
-            string sql = "INSERT INTO Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
+            string sql = "INSERT INTO KeySecretDB.dbo.Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
             var parameters = new DbParameter[] {
                 new DbParameter("@Name", SqlDbType.NVarChar, item.Name),
                 new DbParameter("@WebAdress", SqlDbType.NVarChar, item.WebAdress),
@@ -62,7 +65,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
         public async Task DeleteItemAsync(int id)
         {
-            string sql = "DELETE FROM Accounts WHERE Id=@Id";
+            string sql = "DELETE FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
             var parameter = new DbParameter("@Id", SqlDbType.Int, id);
 
             await _dataAccess.ExecuteQueryVoidAsync(_connectionString, sql, parameter);

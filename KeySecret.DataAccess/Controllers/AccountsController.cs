@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    [Route("api/accounts")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -19,34 +19,37 @@ namespace KeySecret.DataAccess.Controllers
 
         // GET: /api/accounts/
         [HttpGet]
-        public async Task<List<AccountModel>> Get()
+        public async Task<ActionResult<List<AccountModel>>> Get()
         {
             return await _accountsRepository.GetItemsAsync();
         }
 
         // GET: /api/accounts/{id}
         [HttpGet("{id}")]
-        public async Task<AccountModel> GetById(int id)
+        public async Task<ActionResult<AccountModel>> GetById(int id)
         {
             return await _accountsRepository.GetItemAsync(id);
         }
 
-        [HttpPost("/ins/")]
-        public async void Post(AccountModel account)
+        [HttpPost]
+        public IActionResult Post([FromBody] AccountModel account)
         {
-            await _accountsRepository.InsertItemAsync(account);
+            _accountsRepository.InsertItemAsync(account);
+            return NoContent();
         }
 
-        [HttpPut("/upd/{id}")]
-        public async void Put(int id, AccountModel account)
+        [HttpPut]
+        public IActionResult Put([FromBody] AccountModel account)
         {
-            await _accountsRepository.UpdateItemAsync(account);
+            _accountsRepository.UpdateItemAsync(account);
+            return NoContent();
         }
 
-        [HttpDelete("/del/{id}")]
-        public async void Delete(int id)
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
-            await _accountsRepository.DeleteItemAsync(id);
+            _accountsRepository.DeleteItemAsync(id);
+            return NoContent();
         }
     }
 }

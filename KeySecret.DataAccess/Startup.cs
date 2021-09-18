@@ -27,9 +27,7 @@ namespace KeySecret.DataAccess
         {
             ConnectionString = Configuration.GetConnectionString("KeySecretData");
 
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("KeySecretData")));
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
 
             services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString));
 
@@ -37,6 +35,7 @@ namespace KeySecret.DataAccess
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
             services.AddControllersWithViews();
         }
 
