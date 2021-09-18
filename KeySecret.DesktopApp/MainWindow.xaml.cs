@@ -1,7 +1,9 @@
-﻿using KeySecret.DesktopApp.Library.DataAccess;
+﻿using KeySecret.DesktopApp.Library.Interfaces;
 using KeySecret.DesktopApp.Library.Models;
+
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace KeySecret.DesktopApp
@@ -10,20 +12,26 @@ namespace KeySecret.DesktopApp
     {
         public static string _categorie { get; set; }
 
-        private IAccountEndpoint _accountEndpoint;
+        private IEndpoint<AccountModel> _accountEndpoint;
         private ObservableCollection<AccountModel> _accountsList;
 
         public ObservableCollection<AccountModel> AccountsList
         {
-            get { return _accountsList; }
-            set { _accountsList = value; }
+            get => _accountsList;
+            set
+            {
+                _accountsList = value;
+            }
         }
 
-        public MainWindow(IAccountEndpoint accountEndpoint)
+        public MainWindow(IEndpoint<AccountModel> accountEndpoint)
         {
             InitializeComponent();
+
             _accountEndpoint = accountEndpoint;
-            //AccountsList = new List<AccountModel>(_accountEndpoint.GetAllAccounts().Result);
+
+            AccountsList = new ObservableCollection<AccountModel>();
+            lb_Accounts.ItemsSource = AccountsList;
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
@@ -47,6 +55,24 @@ namespace KeySecret.DesktopApp
         private void Quit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await LoadAccountsAsync();
+        }
+
+        private async Task LoadAccountsAsync()
+        {
+            if (AccountsList == null)
+                AccountsList = new ObservableCollection<AccountModel>();
+
+            var list = await _accountEndpoint.GetAll();
+
+            foreach (var item in list)
+            {
+                AccountsList.Add(item);
+            }
         }
     }
 }

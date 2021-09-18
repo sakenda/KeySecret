@@ -9,12 +9,12 @@
         Height="450"
         Width="800"
         WindowStartupLocation="CenterScreen"
-        Style="{StaticResource {x:Type Window}}">
-    
-    <Window.Resources>
+        Style="{StaticResource {x:Type Window}}"
+        Loaded="Window_Loaded">
 
+    <Window.Resources>
     </Window.Resources>
-    
+
     <Border>
         <Grid>
 
@@ -29,23 +29,20 @@
             </Grid.ColumnDefinitions>
             <!-- Categorie Area-->
             <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
-                <ListBoxItem Content="Allgemein" Name="Allgemein" />
-
+                <ListBoxItem Content="Allgemein" Name="Allgemein"/>
             </ListBox>
 
             <!-- Data Area-->
-            <ListBox Margin="10" Grid.Column="1" Grid.RowSpan="2">
-
+            <ListBox ItemsSource="{Binding AccountsList, UpdateSourceTrigger=PropertyChanged}" Name="lb_Accounts" Margin="10" Grid.Column="1" Grid.RowSpan="2">
             </ListBox>
 
             <!-- Button Area-->
             <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <Button Content="Hinzufügen" Click="add" />
-                <Button Content="Entfernen" Click="remove" />
+                <Button Content="Hinzufügen" Click="add"/>
+                <Button Content="Entfernen" Click="remove"/>
+                <Button Content="Laden" Click="Window_Loaded"/>
             </StackPanel>
             <Button Grid.Column="1" Grid.Row="2" Name="Quit" Content="Quit" Click="Quit_Click" HorizontalAlignment="Right"/>
-
         </Grid>
     </Border>
 </Window>
-    

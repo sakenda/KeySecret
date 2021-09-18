@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KeySecret.DesktopApp.Library.Interfaces;
+using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;

@@ -1,10 +1,13 @@
 ﻿using KeySecret.DesktopApp.Library.DataAccess;
 using KeySecret.DesktopApp.Library.Helper;
+using KeySecret.DesktopApp.Library.Models;
+using KeySecret.DesktopApp.Library.Interfaces;
+
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using System;
 using System.Windows;
-using System.IO;
 
 namespace KeySecret.DesktopApp
 {
@@ -27,7 +30,7 @@ namespace KeySecret.DesktopApp
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IApiHelper, ApiHelper>()
-                    .AddSingleton<IAccountEndpoint, AccountEndpoint>();
+                    .AddSingleton<IEndpoint<AccountModel>, AccountEndpoint>();
 
             services.AddTransient(typeof(MainWindow));
         }

@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace KeySecret.DesktopApp.Library.Helper
+namespace KeySecret.DesktopApp.Library.Interfaces
 {
     public interface IApiHelper
     {
