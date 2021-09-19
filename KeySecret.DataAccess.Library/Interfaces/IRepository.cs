@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Library.Interfaces
 {
-    public interface IRepository<T>
+    public interface IRepository<T, K>
     {
         Task<T> GetItemAsync(int id);
-        Task<List<T>> GetItemsAsync();
-        Task InsertItemAsync(T item);
+        Task<IEnumerable<T>> GetItemsAsync();
+        Task<int> InsertItemAsync(K item);
         Task UpdateItemAsync(T item);
         Task DeleteItemAsync(int id);
     }

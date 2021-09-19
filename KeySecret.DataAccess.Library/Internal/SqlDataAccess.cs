@@ -31,15 +31,6 @@ namespace KeySecret.DataAccess.Library.Internal
                 await cmd.ExecuteNonQueryAsync();
             }
         }
-        /// <summary>
-        /// Executes a database query
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        /// <param name="sql">SQL Query as string</param>
-        /// <param name="parameter">A single parameter for executing the query</param>
-        /// <returns>Void</returns>
-        public async Task ExecuteQueryVoidAsync(string connectionString, string sql, DbParameter parameter = null)
-            => await ExecuteQueryVoidAsync(connectionString, sql, new DbParameter[] { parameter });
 
         /// <summary>
         /// Executes a database query and returns the table
@@ -84,15 +75,6 @@ namespace KeySecret.DataAccess.Library.Internal
                 return list;
             }
         }
-        /// <summary>
-        /// Executes a database query and returns the table
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        /// <param name="sql">SQL Query as string</param>
-        /// <param name="parameter">A single parameter for executing the query</param>
-        /// <returns>List of AccountModels</returns>
-        public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, DbParameter parameters = null)
-            => await ExecuteQueryGetItems(connectionString, sql, new DbParameter[] { parameters });
 
         /// <summary>
         /// Executes a database query and returns a AccountModel
@@ -136,14 +118,33 @@ namespace KeySecret.DataAccess.Library.Internal
                 return null;
             }
         }
+
         /// <summary>
-        /// Executes a database query and returns a AccountModel
+        /// Executes a Insert query and returns the Identity
         /// </summary>
         /// <param name="connectionString">Database connection string</param>
         /// <param name="sql">SQL Query as string</param>
-        /// <param name="parameter">A single parameters for executing the query</param>
-        /// <returns>AccountModel</returns>
-        public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, DbParameter parameter = null)
-            => await ExecuteQueryGetItem(connectionString, sql, new DbParameter[] { parameter });
+        /// <param name="parameters">Parameters for executing the query</param>
+        /// <returns>Insert identity</returns>
+        public async Task<int> InsertQueryReturnIdentityAsync(string connectionString, string sql, DbParameter[] parameters = null)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                conn.Open();
+                SqlCommand cmd = new SqlCommand(sql, conn);
+
+                if (parameters != null)
+                {
+                    foreach (var parameter in parameters)
+                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                }
+
+                await cmd.ExecuteNonQueryAsync();
+
+                cmd = new SqlCommand("select @@IDENTITY", conn);
+                var identity = await cmd.ExecuteScalarAsync();
+                return Convert.ToInt32(identity);
+            }
+        }
     }
 }
