@@ -50,7 +50,7 @@ namespace KeySecret.DataAccess.Library.Internal
         /// <returns>List of AccountModels</returns>
         public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, DbParameter[] parameters = null)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
@@ -103,7 +103,7 @@ namespace KeySecret.DataAccess.Library.Internal
         /// <returns>AccountModel</returns>
         public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, DbParameter[] parameters = null)
         {
-            SqlConnection conn = new SqlConnection(connectionString);
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 conn.Open();
                 SqlCommand cmd = new SqlCommand(sql, conn);
