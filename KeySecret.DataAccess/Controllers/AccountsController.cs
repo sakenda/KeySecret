@@ -21,14 +21,16 @@ namespace KeySecret.DataAccess.Controllers
         [HttpGet]
         public async Task<ActionResult<List<AccountModel>>> Get()
         {
-            return await _accountsRepository.GetItemsAsync();
+            var list = await _accountsRepository.GetItemsAsync();
+            return list == null ? NotFound() : list;
         }
 
         // GET: /api/accounts/{id}
         [HttpGet("{id}")]
         public async Task<ActionResult<AccountModel>> GetById(int id)
         {
-            return await _accountsRepository.GetItemAsync(id);
+            var item = await _accountsRepository.GetItemAsync(id);
+            return item == null ? NotFound() : item;
         }
 
         [HttpPost]
