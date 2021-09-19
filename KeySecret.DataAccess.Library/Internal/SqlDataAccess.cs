@@ -119,19 +119,21 @@ namespace KeySecret.DataAccess.Library.Internal
                     }
                 }
 
-                var model = new AccountModel();
                 var query = await cmd.ExecuteReaderAsync();
 
                 while (query.Read())
                 {
-                    model.Id = Convert.ToInt32(query["Id"]);
-                    model.Name = query["Name"].ToString();
-                    model.WebAdress = query["WebAdress"].ToString();
-                    model.Password = query["Password"].ToString();
-                    model.CreatedDate = Convert.ToDateTime(query["CreatedDate"]);
+                    return new AccountModel()
+                    {
+                        Id = Convert.ToInt32(query["Id"]),
+                        Name = query["Name"].ToString(),
+                        WebAdress = query["WebAdress"].ToString(),
+                        Password = query["Password"].ToString(),
+                        CreatedDate = Convert.ToDateTime(query["CreatedDate"])
+                    };
                 }
 
-                return model;
+                return null;
             }
         }
         /// <summary>
