@@ -8,9 +8,7 @@ namespace KeySecret.DesktopApp.Library.Helper
 {
     public class ApiHelper : IApiHelper
     {
-        private HttpClient _client;
-
-        public HttpClient Client => _client;
+        public HttpClient Client { get; private set; }
 
         public ApiHelper()
         {
@@ -21,10 +19,10 @@ namespace KeySecret.DesktopApp.Library.Helper
         {
             string apiAdress = ConfigurationManager.AppSettings["apiAdress"];
 
-            _client = new HttpClient();
-            _client.BaseAddress = new Uri(apiAdress);
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            Client = new HttpClient();
+            Client.BaseAddress = new Uri(apiAdress);
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
         // TODO: Authenticate
