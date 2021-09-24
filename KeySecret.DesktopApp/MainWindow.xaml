@@ -32,8 +32,6 @@
                 <ListBoxItem Content="Show All" Name="Allgemein"/>
             </ListBox>
 
-
- 
             <!-- Data Area-->
             <ListBox ItemsSource="{Binding AccountsList, UpdateSourceTrigger=PropertyChanged}"
                      Name="lb_Accounts"
@@ -44,23 +42,24 @@
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Name}" Width="200"/>
                             <TextBlock Text="{Binding WebAdress}" Width="200"/>
-                            <TextBlock Text="{Binding Password}" />
+                            <TextBlock Text="{Binding Password}"/>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
             <!-- Button Area-->
-            <StackPanel Grid.Row="3" Orientation="Vertical" >
+            <StackPanel Grid.Row="3" Orientation="Vertical">
                 <TextBlock Text="Category" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                 <Button Content="Add" Click="add"/>
                 <Button Content="Remove" Click="remove"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Content="New Pw" />
-                <Button Content="Change Pw" />
-                <Button Content="Remove Pw" />
+                <Button Content="New Pw"/>
+                <Button Content="Change Pw"/>
+                <Button Content="Remove Pw"/>
                 <Button Content="Refresh" Click="Window_Loaded"/>
+                <Button Content="TEST" Click="TestUpdateAccount_OnClick"/>
             </StackPanel>
             <Button Grid.Column="1" Grid.Row="2" Name="Quit" Content="Quit" Click="Quit_Click" HorizontalAlignment="Right"/>
         </Grid>

@@ -1,5 +1,5 @@
-﻿using KeySecret.DesktopApp.Library.Interfaces;
-using KeySecret.DesktopApp.Library.Models;
+﻿using KeySecret.DesktopApp.Library.Accounts.Models;
+using KeySecret.DesktopApp.Library.Interfaces;
 
 using System;
 using System.Collections.ObjectModel;
@@ -12,7 +12,7 @@ namespace KeySecret.DesktopApp
     {
         public static string _categorie { get; set; }
 
-        private IEndpoint<AccountModel> _accountEndpoint;
+        private IEndpoint<AccountModel, UpdateAccountModel> _accountEndpoint;
         private ObservableCollection<AccountModel> _accountsList;
 
         public ObservableCollection<AccountModel> AccountsList
@@ -24,7 +24,7 @@ namespace KeySecret.DesktopApp
             }
         }
 
-        public MainWindow(IEndpoint<AccountModel> accountEndpoint)
+        public MainWindow(IEndpoint<AccountModel, UpdateAccountModel> accountEndpoint)
         {
             InitializeComponent();
 
@@ -68,12 +68,23 @@ namespace KeySecret.DesktopApp
             if (AccountsList == null)
                 AccountsList = new ObservableCollection<AccountModel>();
 
-            var list = await _accountEndpoint.GetAll();
+            var list = await _accountEndpoint.GetAllAsync();
 
             foreach (var item in list)
             {
                 AccountsList.Add(item);
             }
+        }
+
+        private void TestUpdateAccount_OnClick(object sender, RoutedEventArgs e)
+        {
+            var item = new UpdateAccountModel();
+            item.Id = _accountsList[0].Id;
+            item.Name = _accountsList[0].Name + "*updated*";
+            item.WebAdress = _accountsList[0].WebAdress;
+            item.Password = _accountsList[0].Password;
+
+            _accountEndpoint.UpdateAsync(item);
         }
     }
 }

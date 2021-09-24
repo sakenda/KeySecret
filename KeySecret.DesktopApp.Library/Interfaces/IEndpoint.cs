@@ -3,8 +3,9 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DesktopApp.Library.Interfaces
 {
-    public interface IEndpoint<T>
+    public interface IEndpoint<T, K>
     {
-        Task<IEnumerable<T>> GetAll();
+        Task<IEnumerable<T>> GetAllAsync();
+        Task UpdateAsync(K item);
     }
 }
