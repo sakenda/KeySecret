@@ -29,27 +29,38 @@
             </Grid.ColumnDefinitions>
             <!-- Categorie Area-->
             <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
-                <ListBoxItem Content="Allgemein" Name="Allgemein"/>
+                <ListBoxItem Content="Show All" Name="Allgemein"/>
             </ListBox>
 
+
+ 
             <!-- Data Area-->
-            <ListBox ItemsSource="{Binding AccountsList, UpdateSourceTrigger=PropertyChanged}" Name="lb_Accounts" Margin="10" Grid.Column="1" Grid.RowSpan="2">
+            <ListBox ItemsSource="{Binding AccountsList, UpdateSourceTrigger=PropertyChanged}"
+                     Name="lb_Accounts"
+                     Margin="10" Grid.Column="1"
+                     Grid.RowSpan="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Name}" Width="200"/>
                             <TextBlock Text="{Binding WebAdress}" Width="200"/>
-                            <TextBlock Text="{Binding Password}"/>
+                            <TextBlock Text="{Binding Password}" />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
 
             <!-- Button Area-->
-            <StackPanel Grid.Row="3" Grid.ColumnSpan="2" Orientation="Horizontal">
-                <Button Content="Hinzufügen" Click="add"/>
-                <Button Content="Entfernen" Click="remove"/>
-                <Button Content="Laden" Click="Window_Loaded"/>
+            <StackPanel Grid.Row="3" Orientation="Vertical" >
+                <TextBlock Text="Category" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Button Content="Add" Click="add"/>
+                <Button Content="Remove" Click="remove"/>
+            </StackPanel>
+            <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
+                <Button Content="New Pw" />
+                <Button Content="Change Pw" />
+                <Button Content="Remove Pw" />
+                <Button Content="Refresh" Click="Window_Loaded"/>
             </StackPanel>
             <Button Grid.Column="1" Grid.Row="2" Name="Quit" Content="Quit" Click="Quit_Click" HorizontalAlignment="Right"/>
         </Grid>
