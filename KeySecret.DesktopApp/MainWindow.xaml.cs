@@ -59,6 +59,7 @@ namespace KeySecret.DesktopApp
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            _accountsList.Clear();
             await LoadAccountsAsync();
         }
 
