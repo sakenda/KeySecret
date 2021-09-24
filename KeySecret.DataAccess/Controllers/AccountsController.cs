@@ -7,34 +7,31 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IRepository<AccountModel, InsertAccountModel> _accountsRepository;
+        private readonly IRepository<AccountModel, InsertAccountModel, UpdateAccountModel> _accountsRepository;
 
-        public AccountsController(IRepository<AccountModel, InsertAccountModel> accountsRepository)
+        public AccountsController(IRepository<AccountModel, InsertAccountModel, UpdateAccountModel> accountsRepository)
         {
             _accountsRepository = accountsRepository;
         }
 
-        // GET: /api/accounts/
-        [HttpGet]
+        [HttpGet("/api/accounts")]
         public async Task<IEnumerable<AccountModel>> GetAllAccountsAsync()
         {
             var list = await _accountsRepository.GetItemsAsync();
             return list;
         }
 
-        // GET: /api/accounts/{id}
-        [HttpGet("{id}")]
+        [HttpGet("/api/accounts/{id}")]
         public async Task<ActionResult<AccountModel>> GetByIdAsync(int id)
         {
             var item = await _accountsRepository.GetItemAsync(id);
             return item == null ? NotFound() : item;
         }
 
-        [HttpPost]
+        [HttpPost("/api/accounts/ins")]
         public async Task<ActionResult<AccountModel>> InsertAccountAsync([FromBody] InsertAccountModel account)
         {
             int id = await _accountsRepository.InsertItemAsync(account);
@@ -51,14 +48,14 @@ namespace KeySecret.DataAccess.Controllers
             return CreatedAtAction(nameof(InsertAccountAsync), createdItem);
         }
 
-        [HttpPut]
-        public IActionResult UpdateAccountAsync([FromBody] AccountModel account)
+        [HttpPut("/api/accounts/upd")]
+        public IActionResult UpdateAccountAsync([FromBody] UpdateAccountModel account)
         {
             _accountsRepository.UpdateItemAsync(account);
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("/api/accounts/del/{id}")]
         public IActionResult DeleteAccountAsync(int id)
         {
             _accountsRepository.DeleteItemAsync(id);

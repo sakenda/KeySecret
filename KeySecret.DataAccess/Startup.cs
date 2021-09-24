@@ -30,7 +30,7 @@ namespace KeySecret.DataAccess
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
 
-            services.AddSingleton<IRepository<AccountModel, InsertAccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString));
+            services.AddSingleton<IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

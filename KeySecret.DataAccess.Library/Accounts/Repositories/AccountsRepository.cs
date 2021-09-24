@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Library.Accounts.Repositories
 {
-    public class AccountsRepository : IRepository<AccountModel, InsertAccountModel>
+    public class AccountsRepository : IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>
     {
         private string _connectionString;
         private SqlDataAccess _dataAccess;
@@ -50,7 +50,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
             return await _dataAccess.InsertQueryReturnIdentityAsync(_connectionString, sql, parameters);
         }
 
-        public async Task UpdateItemAsync(AccountModel item)
+        public async Task UpdateItemAsync(UpdateAccountModel item)
         {
             string sql = "UPDATE KeySecretDB.dbo.Accounts SET [Name] = @Name, [WebAdress] = @WebAdress, [Password] = @Password WHERE [Id] = @Id";
             var parameters = new DbParameter[] {

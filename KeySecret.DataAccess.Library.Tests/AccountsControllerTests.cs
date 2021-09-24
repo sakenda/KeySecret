@@ -12,7 +12,7 @@ namespace KeySecret.DataAccess.Library.Tests
 {
     public class AccountsControllerTests
     {
-        private readonly Mock<IRepository<AccountModel, InsertAccountModel>> repositoryMock = new();
+        private readonly Mock<IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>> repositoryMock = new();
         private readonly Random rand = new Random();
 
         private AccountModel CreateRandomItem()
