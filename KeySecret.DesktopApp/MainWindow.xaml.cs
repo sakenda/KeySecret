@@ -12,7 +12,7 @@ namespace KeySecret.DesktopApp
     {
         public static string _categorie { get; set; }
 
-        private IEndpoint<AccountModel, UpdateAccountModel> _accountEndpoint;
+        private IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> _accountEndpoint;
         private ObservableCollection<AccountModel> _accountsList;
 
         public ObservableCollection<AccountModel> AccountsList
@@ -24,7 +24,7 @@ namespace KeySecret.DesktopApp
             }
         }
 
-        public MainWindow(IEndpoint<AccountModel, UpdateAccountModel> accountEndpoint)
+        public MainWindow(IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> accountEndpoint)
         {
             InitializeComponent();
 
