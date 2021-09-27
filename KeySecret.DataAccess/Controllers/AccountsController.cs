@@ -22,14 +22,34 @@ namespace KeySecret.DataAccess.Controllers
         [HttpGet("/api/accounts")]
         public async Task<ActionResult<IEnumerable<AccountModel>>> GetAllAccountsAsync()
         {
-            var list = await _accountsRepository.GetItemsAsync();
+            IEnumerable<AccountModel> list = null;
+
+            try
+            {
+                await _accountsRepository.GetItemsAsync();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed request: " + ex.InnerException.Message);
+            }
+
             return list == null ? NotFound() : Ok(list);
         }
 
         [HttpGet("/api/accounts/{id}")]
         public async Task<ActionResult<AccountModel>> GetByIdAsync(int id)
         {
-            var item = await _accountsRepository.GetItemAsync(id);
+            AccountModel item = null;
+
+            try
+            {
+                item = await _accountsRepository.GetItemAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed request: " + ex.InnerException.Message);
+            }
+
             return item == null ? NotFound() : Ok(item);
         }
 
@@ -42,10 +62,13 @@ namespace KeySecret.DataAccess.Controllers
             {
                 id = await _accountsRepository.InsertItemAsync(account);
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("Account konnte nicht ohne Fehler in die Datenbank geschrieben werden.");
+                return BadRequest("Failed request: " + ex.InnerException.Message);
             }
+
+            if (id < 1)
+                return BadRequest("Something wen't wrong.");
 
             var createdItem = new AccountModel()
             {
@@ -62,14 +85,30 @@ namespace KeySecret.DataAccess.Controllers
         [HttpPut("/api/accounts/upd")]
         public IActionResult UpdateAccountAsync([FromBody] UpdateAccountModel account)
         {
-            _accountsRepository.UpdateItemAsync(account);
+            try
+            {
+                _accountsRepository.UpdateItemAsync(account);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed request: " + ex.InnerException.Message);
+            }
+
             return NoContent();
         }
 
         [HttpDelete("/api/accounts/del/{id}")]
         public IActionResult DeleteAccountAsync(int id)
         {
-            _accountsRepository.DeleteItemAsync(id);
+            try
+            {
+                _accountsRepository.DeleteItemAsync(id);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("Failed request: " + ex.InnerException.Message);
+            }
+
             return NoContent();
         }
     }

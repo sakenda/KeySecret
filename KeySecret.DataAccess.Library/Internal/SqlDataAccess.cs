@@ -9,26 +9,49 @@ namespace KeySecret.DataAccess.Library.Internal
     internal class SqlDataAccess
     {
         /// <summary>
-        /// Executes a database query
+        /// Executes a database query and returns a AccountModel
         /// </summary>
         /// <param name="connectionString">Database connection string</param>
         /// <param name="sql">SQL Query as string</param>
         /// <param name="parameters">Parameters for executing the query</param>
-        /// <returns>Void</returns>
-        public async Task ExecuteQueryVoidAsync(string connectionString, string sql, DbParameter[] parameters = null)
+        /// <returns>AccountModel</returns>
+        public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, params object[] parameters)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                AccountModel model = null;
 
-                if (parameters != null)
+                connection.Open();
+
+                SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItem));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.AddRange(parameters == null ? null : parameters);
+
+                try
                 {
-                    foreach (var parameter in parameters)
-                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            model = new AccountModel()
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                WebAdress = reader["WebAdress"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                            };
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(ExecuteQueryGetItem));
                 }
 
-                await cmd.ExecuteNonQueryAsync();
+                return model;
             }
         }
 
@@ -39,83 +62,43 @@ namespace KeySecret.DataAccess.Library.Internal
         /// <param name="sql">SQL Query as string</param>
         /// <param name="parameters">Parameters for executing the query</param>
         /// <returns>List of AccountModels</returns>
-        public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, DbParameter[] parameters = null)
+        public async Task<List<AccountModel>> ExecuteQueryGetItems(string connectionString, string sql, params object[] parameters)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                if (parameters != null)
-                {
-                    foreach (var parameter in parameters)
-                    {
-                        if (parameter == null)
-                            continue;
-
-                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
-                    }
-                }
-
                 var list = new List<AccountModel>();
-                var query = await cmd.ExecuteReaderAsync();
 
-                while (query.Read())
+                connection.Open();
+
+                SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItems));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.AddRange(parameters == null ? null : parameters);
+
+                try
                 {
-                    list.Add(new AccountModel
+                    using (var reader = await command.ExecuteReaderAsync())
                     {
-                        Id = Convert.ToInt32(query["Id"]),
-                        Name = query["Name"].ToString(),
-                        WebAdress = query["WebAdress"].ToString(),
-                        Password = query["Password"].ToString(),
-                        CreatedDate = Convert.ToDateTime(query["CreatedDate"])
-                    });
+                        while (reader.Read())
+                        {
+                            list.Add(new AccountModel
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                WebAdress = reader["WebAdress"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                            });
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(ExecuteQueryGetItems));
                 }
 
                 return list;
-            }
-        }
-
-        /// <summary>
-        /// Executes a database query and returns a AccountModel
-        /// </summary>
-        /// <param name="connectionString">Database connection string</param>
-        /// <param name="sql">SQL Query as string</param>
-        /// <param name="parameters">Parameters for executing the query</param>
-        /// <returns>AccountModel</returns>
-        public async Task<AccountModel> ExecuteQueryGetItem(string connectionString, string sql, DbParameter[] parameters = null)
-        {
-            using (SqlConnection conn = new SqlConnection(connectionString))
-            {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
-
-                if (parameters != null)
-                {
-                    foreach (var parameter in parameters)
-                    {
-                        if (parameter == null)
-                            continue;
-
-                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
-                    }
-                }
-
-                var query = await cmd.ExecuteReaderAsync();
-
-                while (query.Read())
-                {
-                    return new AccountModel()
-                    {
-                        Id = Convert.ToInt32(query["Id"]),
-                        Name = query["Name"].ToString(),
-                        WebAdress = query["WebAdress"].ToString(),
-                        Password = query["Password"].ToString(),
-                        CreatedDate = Convert.ToDateTime(query["CreatedDate"])
-                    };
-                }
-
-                return null;
             }
         }
 
@@ -126,25 +109,96 @@ namespace KeySecret.DataAccess.Library.Internal
         /// <param name="sql">SQL Query as string</param>
         /// <param name="parameters">Parameters for executing the query</param>
         /// <returns>Insert identity</returns>
-        public async Task<int> InsertQueryReturnIdentityAsync(string connectionString, string sql, DbParameter[] parameters = null)
+        public async Task<int> InsertQueryReturnIdentityAsync(string connectionString, string sql, params object[] parameters)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                conn.Open();
-                SqlCommand cmd = new SqlCommand(sql, conn);
+                object identity = null;
 
-                if (parameters != null)
+                connection.Open();
+
+                SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItem));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.AddRange(parameters == null ? null : parameters);
+
+                try
                 {
-                    foreach (var parameter in parameters)
-                        cmd.Parameters.Add(parameter.Name, parameter.Type).Value = parameter.Value;
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+
+                    transaction = connection.BeginTransaction("GetIdentifier");
+                    command = new SqlCommand("select @@IDENTITY", connection, transaction);
+                    identity = await command.ExecuteScalarAsync();
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await TransactionRollbackAsync(transaction, ex, nameof(ExecuteQueryGetItem));
                 }
 
-                await cmd.ExecuteNonQueryAsync();
-
-                cmd = new SqlCommand("select @@IDENTITY", conn);
-                var identity = await cmd.ExecuteScalarAsync();
                 return Convert.ToInt32(identity);
             }
+        }
+
+        /// <summary>
+        /// Executes a database query
+        /// </summary>
+        /// <param name="connectionString">Database connection string</param>
+        /// <param name="sql">SQL Query as string</param>
+        /// <param name="parameters">Parameters for executing the query</param>
+        /// <returns>Void</returns>
+        public async Task ExecuteQueryVoidAsync(string connectionString, string sql, params object[] parameters)
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+
+                SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryVoidAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.AddRange(parameters == null ? null : parameters);
+
+                try
+                {
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await TransactionRollbackAsync(transaction, ex, nameof(ExecuteQueryVoidAsync));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tries a Rollback. If it fails, the method will return a Exception
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <param name="ex"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        private async Task<Exception> TransactionRollbackAsync(SqlTransaction transaction, Exception ex, string origin)
+        {
+            try
+            {
+                await transaction.RollbackAsync();
+            }
+            catch (Exception ex2)
+            {
+                return new Exception(
+                    "\r\n\r\n" +
+                    $"Caller:\t{origin}\r\n" +
+                    $"Message:\t{ex2.Message}\r\n\r\n" +
+                    ex2.StackTrace
+                );
+            }
+
+            return new Exception(
+                    "\r\n\r\n" +
+                    $"Caller:\t{origin}\r\n" +
+                    $"Message:\t{ex.Message}\r\n\r\n" +
+                    ex.StackTrace
+                );
         }
     }
 }
