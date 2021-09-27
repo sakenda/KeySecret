@@ -3,6 +3,8 @@ using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
@@ -18,23 +20,32 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpGet("/api/accounts")]
-        public async Task<IEnumerable<AccountModel>> GetAllAccountsAsync()
+        public async Task<ActionResult<IEnumerable<AccountModel>>> GetAllAccountsAsync()
         {
             var list = await _accountsRepository.GetItemsAsync();
-            return list;
+            return list == null ? NotFound() : Ok(list);
         }
 
         [HttpGet("/api/accounts/{id}")]
         public async Task<ActionResult<AccountModel>> GetByIdAsync(int id)
         {
             var item = await _accountsRepository.GetItemAsync(id);
-            return item == null ? NotFound() : item;
+            return item == null ? NotFound() : Ok(item);
         }
 
         [HttpPost("/api/accounts/ins")]
         public async Task<ActionResult<AccountModel>> InsertAccountAsync([FromBody] InsertAccountModel account)
         {
-            int id = await _accountsRepository.InsertItemAsync(account);
+            int id = -1;
+
+            try
+            {
+                id = await _accountsRepository.InsertItemAsync(account);
+            }
+            catch
+            {
+                return BadRequest("Account konnte nicht ohne Fehler in die Datenbank geschrieben werden.");
+            }
 
             var createdItem = new AccountModel()
             {
