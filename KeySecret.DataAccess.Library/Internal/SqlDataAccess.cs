@@ -25,7 +25,8 @@ namespace KeySecret.DataAccess.Library.Internal
 
                 SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItem));
                 SqlCommand command = new SqlCommand(sql, connection, transaction);
-                command.Parameters.AddRange(parameters == null ? null : parameters);
+                if (parameters != null)
+                    command.Parameters.AddRange(parameters);
 
                 try
                 {
@@ -72,7 +73,8 @@ namespace KeySecret.DataAccess.Library.Internal
 
                 SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItems));
                 SqlCommand command = new SqlCommand(sql, connection, transaction);
-                command.Parameters.AddRange(parameters == null ? null : parameters);
+                if (parameters != null)
+                    command.Parameters.AddRange(parameters);
 
                 try
                 {
@@ -119,7 +121,8 @@ namespace KeySecret.DataAccess.Library.Internal
 
                 SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryGetItem));
                 SqlCommand command = new SqlCommand(sql, connection, transaction);
-                command.Parameters.AddRange(parameters == null ? null : parameters);
+                if (parameters != null)
+                    command.Parameters.AddRange(parameters);
 
                 try
                 {
@@ -156,7 +159,8 @@ namespace KeySecret.DataAccess.Library.Internal
 
                 SqlTransaction transaction = connection.BeginTransaction(nameof(ExecuteQueryVoidAsync));
                 SqlCommand command = new SqlCommand(sql, connection, transaction);
-                command.Parameters.AddRange(parameters == null ? null : parameters);
+                if (parameters != null)
+                    command.Parameters.AddRange(parameters);
 
                 try
                 {

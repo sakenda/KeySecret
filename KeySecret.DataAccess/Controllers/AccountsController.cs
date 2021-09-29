@@ -22,11 +22,11 @@ namespace KeySecret.DataAccess.Controllers
         [HttpGet("/api/accounts")]
         public async Task<ActionResult<IEnumerable<AccountModel>>> GetAllAccountsAsync()
         {
-            IEnumerable<AccountModel> list = null;
+            IEnumerable<AccountModel> list;
 
             try
             {
-                await _accountsRepository.GetItemsAsync();
+                list = await _accountsRepository.GetItemsAsync();
             }
             catch (Exception ex)
             {
