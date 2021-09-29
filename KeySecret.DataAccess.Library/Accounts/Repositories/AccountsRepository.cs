@@ -1,6 +1,5 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
-using KeySecret.DataAccess.Library.Internal;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,15 +8,13 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Library.Accounts.Repositories
 {
-    public class AccountsRepository : IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>
+    public class AccountsRepository : IRepository<AccountModel>
     {
         private string _connectionString;
-        private SqlDataAccess _dataAccess;
 
         public AccountsRepository(string connectionString)
         {
             _connectionString = connectionString;
-            _dataAccess = new SqlDataAccess();
         }
 
         /// <summary>
@@ -27,14 +24,42 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         /// <returns></returns>
         public async Task<AccountModel> GetItemAsync(int id)
         {
-            string sql = "SELECT * FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
-            var parameter = new SqlParameter[]
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                new SqlParameter("Id", SqlDbType.Int) { Value = id }
-            };
+                connection.Open();
 
-            var model = await _dataAccess.ExecuteQueryGetItem(_connectionString, sql, parameter);
-            return model;
+                AccountModel model = null;
+                string sql = "SELECT * FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
+                SqlTransaction transaction = connection.BeginTransaction(nameof(GetItemAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int)).Value = id;
+
+                try
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            model = new AccountModel()
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                WebAdress = reader["WebAdress"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                            };
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(GetItemAsync));
+                }
+
+                return model;
+            }
         }
 
         /// <summary>
@@ -43,9 +68,41 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<AccountModel>> GetItemsAsync()
         {
-            string sql = "SELECT * FROM KeySecretDB.dbo.Accounts";
-            var list = await _dataAccess.ExecuteQueryGetItems(_connectionString, sql, null);
-            return list;
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                connection.Open();
+
+                var list = new List<AccountModel>();
+                string sql = "SELECT * FROM KeySecretDB.dbo.Accounts";
+                SqlTransaction transaction = connection.BeginTransaction(nameof(GetItemsAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+
+                try
+                {
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new AccountModel
+                            {
+                                Id = Convert.ToInt32(reader["Id"]),
+                                Name = reader["Name"].ToString(),
+                                WebAdress = reader["WebAdress"].ToString(),
+                                Password = reader["Password"].ToString(),
+                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                            });
+                        }
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(GetItemsAsync));
+                }
+
+                return list;
+            }
         }
 
         /// <summary>
@@ -53,17 +110,39 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public async Task<int> InsertItemAsync(InsertAccountModel item)
+        public async Task<AccountModel> InsertItemAsync(AccountModel item)
         {
-            string sql = "INSERT INTO KeySecretDB.dbo.Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
-            var parameters = new SqlParameter[]
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                new SqlParameter("@Name", SqlDbType.NVarChar) { Value = item.Name },
-                new SqlParameter("@WebAdress", SqlDbType.NVarChar) { Value = item.WebAdress },
-                new SqlParameter("@Password", SqlDbType.NVarChar) { Value = item.Password }
-            };
+                connection.Open();
 
-            return await _dataAccess.InsertQueryReturnIdentityAsync(_connectionString, sql, parameters);
+                string sql = "INSERT INTO KeySecretDB.dbo.Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
+                SqlTransaction transaction = connection.BeginTransaction(nameof(InsertItemAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name;
+                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress;
+                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password;
+
+                try
+                {
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+
+                    transaction = connection.BeginTransaction("GetIdentifier");
+                    command = new SqlCommand("select @@IDENTITY", connection, transaction);
+
+                    item.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
+                    item.CreatedDate = DateTime.Now;
+
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await TransactionRollbackAsync(transaction, ex, nameof(InsertItemAsync));
+                }
+
+                return item;
+            }
         }
 
         /// <summary>
@@ -71,18 +150,30 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         /// </summary>
         /// <param name="item"></param>
         /// <returns></returns>
-        public async Task UpdateItemAsync(UpdateAccountModel item)
+        public async Task UpdateItemAsync(AccountModel item)
         {
-            string sql = "UPDATE KeySecretDB.dbo.Accounts SET [Name] = @Name, [WebAdress] = @WebAdress, [Password] = @Password WHERE [Id] = @Id";
-            var parameters = new SqlParameter[]
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                new SqlParameter("@Id", SqlDbType.NVarChar) { Value = item.Id },
-                new SqlParameter("@Name", SqlDbType.NVarChar) { Value = item.Name == null ? DBNull.Value : item.Name },
-                new SqlParameter("@WebAdress", SqlDbType.NVarChar) { Value = item.WebAdress == null ? DBNull.Value : item.WebAdress },
-                new SqlParameter("@Password", SqlDbType.NVarChar) { Value = item.Password == null ? DBNull.Value : item.Password }
-            };
+                connection.Open();
 
-            await _dataAccess.ExecuteQueryVoidAsync(_connectionString, sql, parameters);
+                string sql = "UPDATE KeySecretDB.dbo.Accounts SET [Name] = @Name, [WebAdress] = @WebAdress, [Password] = @Password WHERE [Id] = @Id";
+                SqlTransaction transaction = connection.BeginTransaction(nameof(UpdateItemAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.NVarChar)).Value = item.Id;
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name == null ? DBNull.Value : item.Name;
+                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress == null ? DBNull.Value : item.WebAdress;
+                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password == null ? DBNull.Value : item.Password;
+
+                try
+                {
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await TransactionRollbackAsync(transaction, ex, nameof(UpdateItemAsync));
+                }
+            }
         }
 
         /// <summary>
@@ -92,13 +183,56 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         /// <returns></returns>
         public async Task DeleteItemAsync(int id)
         {
-            string sql = "DELETE FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
-            var parameter = new SqlParameter[]
+            using (SqlConnection connection = new SqlConnection(_connectionString))
             {
-                new SqlParameter("@Id", SqlDbType.Int) { Value = id }
-            };
+                connection.Open();
 
-            await _dataAccess.ExecuteQueryVoidAsync(_connectionString, sql, parameter);
+                string sql = "DELETE FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
+                SqlTransaction transaction = connection.BeginTransaction(nameof(DeleteItemAsync));
+                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.NVarChar)).Value = id;
+
+                try
+                {
+                    await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
+                }
+                catch (Exception ex)
+                {
+                    await TransactionRollbackAsync(transaction, ex, nameof(DeleteItemAsync));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Tries a Rollback. If it fails, the method will return a Exception
+        /// </summary>
+        /// <param name="transaction"></param>
+        /// <param name="ex"></param>
+        /// <param name="origin"></param>
+        /// <returns></returns>
+        private async Task<Exception> TransactionRollbackAsync(SqlTransaction transaction, Exception ex, string origin)
+        {
+            try
+            {
+                await transaction.RollbackAsync();
+            }
+            catch (Exception ex2)
+            {
+                return new Exception(
+                    "\r\n\r\n" +
+                    $"Caller:\t{origin}\r\n" +
+                    $"Message:\t{ex2.Message}\r\n\r\n" +
+                    ex2.StackTrace
+                );
+            }
+
+            return new Exception(
+                    "\r\n\r\n" +
+                    $"Caller:\t{origin}\r\n" +
+                    $"Message:\t{ex.Message}\r\n\r\n" +
+                    ex.StackTrace
+                );
         }
     }
 }

@@ -1,10 +1,7 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
@@ -12,9 +9,9 @@ namespace KeySecret.DataAccess.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
-        private readonly IRepository<AccountModel, InsertAccountModel, UpdateAccountModel> _accountsRepository;
+        private readonly IRepository<AccountModel> _accountsRepository;
 
-        public AccountsController(IRepository<AccountModel, InsertAccountModel, UpdateAccountModel> accountsRepository)
+        public AccountsController(IRepository<AccountModel> accountsRepository)
         {
             _accountsRepository = accountsRepository;
         }
@@ -22,93 +19,35 @@ namespace KeySecret.DataAccess.Controllers
         [HttpGet("/api/accounts")]
         public async Task<ActionResult<IEnumerable<AccountModel>>> GetAllAccountsAsync()
         {
-            IEnumerable<AccountModel> list;
-
-            try
-            {
-                list = await _accountsRepository.GetItemsAsync();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed request: " + ex.InnerException.Message);
-            }
-
+            IEnumerable<AccountModel> list = await _accountsRepository.GetItemsAsync();
             return list == null ? NotFound() : Ok(list);
         }
 
         [HttpGet("/api/accounts/{id}")]
         public async Task<ActionResult<AccountModel>> GetByIdAsync(int id)
         {
-            AccountModel item = null;
-
-            try
-            {
-                item = await _accountsRepository.GetItemAsync(id);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed request: " + ex.InnerException.Message);
-            }
-
+            AccountModel item = await _accountsRepository.GetItemAsync(id);
             return item == null ? NotFound() : Ok(item);
         }
 
         [HttpPost("/api/accounts/ins")]
-        public async Task<ActionResult<AccountModel>> InsertAccountAsync([FromBody] InsertAccountModel account)
+        public async Task<ActionResult<AccountModel>> InsertAccountAsync(AccountModel account)
         {
-            int id = -1;
-
-            try
-            {
-                id = await _accountsRepository.InsertItemAsync(account);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed request: " + ex.InnerException.Message);
-            }
-
-            if (id < 1)
-                return BadRequest("Something wen't wrong.");
-
-            var createdItem = new AccountModel()
-            {
-                Id = id,
-                Name = account.Name,
-                WebAdress = account.WebAdress,
-                Password = account.Password,
-                CreatedDate = DateTime.Now
-            };
-
-            return CreatedAtAction(nameof(InsertAccountAsync), createdItem);
+            AccountModel model = await _accountsRepository.InsertItemAsync(account);
+            return CreatedAtAction(nameof(InsertAccountAsync), model);
         }
 
         [HttpPut("/api/accounts/upd")]
-        public IActionResult UpdateAccountAsync([FromBody] UpdateAccountModel account)
+        public IActionResult UpdateAccountAsync(AccountModel account)
         {
-            try
-            {
-                _accountsRepository.UpdateItemAsync(account);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed request: " + ex.InnerException.Message);
-            }
-
+            _accountsRepository.UpdateItemAsync(account);
             return NoContent();
         }
 
         [HttpDelete("/api/accounts/del/{id}")]
         public IActionResult DeleteAccountAsync(int id)
         {
-            try
-            {
-                _accountsRepository.DeleteItemAsync(id);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("Failed request: " + ex.InnerException.Message);
-            }
-
+            _accountsRepository.DeleteItemAsync(id);
             return NoContent();
         }
     }

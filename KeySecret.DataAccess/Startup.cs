@@ -1,6 +1,8 @@
 using KeySecret.DataAccess.Data;
 using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Accounts.Repositories;
+using KeySecret.DataAccess.Library.Categories.Models;
+using KeySecret.DataAccess.Library.Categories.Repositories;
 using KeySecret.DataAccess.Library.Interfaces;
 
 using Microsoft.AspNetCore.Builder;
@@ -30,7 +32,8 @@ namespace KeySecret.DataAccess
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
 
-            services.AddSingleton<IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString));
+            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString))
+                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(repository => new CategoryRepository(ConnectionString));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 

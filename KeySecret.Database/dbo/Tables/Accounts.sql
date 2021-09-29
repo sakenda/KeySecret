@@ -1,5 +1,5 @@
 ﻿CREATE TABLE [dbo].[Accounts] (
-    [Id] INT IDENTITY (1, 1) NOT NULL,
+    [Id] INT IDENTITY (1, 1) NOT NULL PRIMARY KEY,
     [Name] NVARCHAR (MAX) NULL,
     [WebAdress] NVARCHAR(MAX) NULL, 
     [Password] NVARCHAR(128) NULL,
