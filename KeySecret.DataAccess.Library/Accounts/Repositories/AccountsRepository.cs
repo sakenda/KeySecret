@@ -10,7 +10,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 {
     public class AccountsRepository : IRepository<AccountModel>
     {
-        private string _connectionString;
+        private readonly string _connectionString;
 
         public AccountsRepository(string connectionString)
         {

@@ -12,7 +12,7 @@ namespace KeySecret.DataAccess.Library.Tests
 {
     public class AccountsControllerTests
     {
-        private readonly Mock<IRepository<AccountModel, InsertAccountModel, UpdateAccountModel>> repositoryMock = new();
+        private readonly Mock<IRepository<AccountModel>> repositoryMock = new();
         private readonly Random rand = new Random();
 
         private AccountModel CreateRandomItem()
@@ -81,7 +81,12 @@ namespace KeySecret.DataAccess.Library.Tests
         {
             // Arrange
             var controller = new AccountsController(repositoryMock.Object);
-            var newItem = new InsertAccountModel(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var newItem = new AccountModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+                WebAdress = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString()
+            };
 
             // Act
             var result = await controller.InsertAccountAsync(newItem);
@@ -90,7 +95,7 @@ namespace KeySecret.DataAccess.Library.Tests
             var createdItem = (result.Result as CreatedAtActionResult).Value as AccountModel;
             newItem.Should().BeEquivalentTo(
                 createdItem,
-                options => options.ComparingByMembers<InsertAccountModel>().ExcludingMissingMembers()
+                options => options.ComparingByMembers<AccountModel>().ExcludingMissingMembers()
                 );
             createdItem.CreatedDate.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
         }

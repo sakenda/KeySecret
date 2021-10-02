@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DesktopApp.Library.DataAccess
 {
-    public class AccountEndpoint : IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel>
+    public class AccountEndpoint : IEndpoint<AccountModel>
     {
-        private IApiHelper _apiHelper;
+        private readonly IApiHelper _apiHelper;
 
         public AccountEndpoint(IApiHelper apiHelper)
         {
@@ -56,7 +56,7 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         /// </summary>
         /// <param name="item">Der Eintrag mit den aktualisierten Daten</param>
         /// <returns></returns>
-        public async Task UpdateAsync(UpdateAccountModel item)
+        public async Task UpdateAsync(AccountModel item)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/accounts/upd", item))
             {
@@ -70,7 +70,7 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         /// </summary>
         /// <param name="item">Der Eintrag mit dem neuen Datensatz</param>
         /// <returns></returns>
-        public async Task InsertAsync(InsertAccountModel item)
+        public async Task InsertAsync(AccountModel item)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/accounts/ins", item))
             {

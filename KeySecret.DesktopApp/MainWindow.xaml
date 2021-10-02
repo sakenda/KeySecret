@@ -51,8 +51,8 @@
             <!-- Button Area-->
             <StackPanel Grid.Row="3" Orientation="Vertical">
                 <TextBlock Text="Category" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                <Button Content="Add" Click="add"/>
-                <Button Content="Remove" Click="remove"/>
+                <Button Content="Add" Click="Add"/>
+                <Button Content="Remove" Click="Remove"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Content="New Pw"/>
