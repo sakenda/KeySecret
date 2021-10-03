@@ -24,9 +24,14 @@ namespace KeySecret.DataAccess.Controllers
         {
             IEnumerable<AccountModel> list = await _accountsRepository.GetItemsAsync();
 
-            _logger.LogInformation($"Es wurde eine Liste aller Accounts angefordert. {((List<AccountModel>)list).Count} Accounts wurden zurückgegeben.");
+            if (list == null)
+            {
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
+                return NotFound(nameof(InsertAccountAsync) + ": NULL-Object returned");
+            }
 
-            return list == null ? NotFound() : Ok(list);
+            _logger.LogInformation($"Es wurde eine Liste aller Accounts angefordert. {((List<AccountModel>)list).Count} Accounts wurden zurückgegeben.");
+            return Ok(list);
         }
 
         [HttpGet("/api/accounts/{id}")]
@@ -34,9 +39,14 @@ namespace KeySecret.DataAccess.Controllers
         {
             AccountModel item = await _accountsRepository.GetItemAsync(id);
 
-            _logger.LogInformation($"Der Account mit der ID {id} wurd angefordert.");
+            if (item == null)
+            {
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
+                return NotFound(nameof(InsertAccountAsync) + ": NULL-Object returned");
+            }
 
-            return item == null ? NotFound() : Ok(item);
+            _logger.LogInformation($"Der Account mit der ID {id} wurd angefordert.");
+            return Ok(item);
         }
 
         [HttpPost("/api/accounts/ins")]

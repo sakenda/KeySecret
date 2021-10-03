@@ -234,6 +234,8 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
             }
             catch (Exception ex2)
             {
+                _logger.LogError($"Fehler beim abrufen in {origin}, Rollback fehlgeschlagen.");
+
                 return new Exception(
                     "\r\n\r\n" +
                     $"Caller:\t{origin}\r\n" +
@@ -241,6 +243,8 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                     ex2.StackTrace
                 );
             }
+
+            _logger.LogError($"Fehler beim abrufen in {origin}, Rollback erfolgreich.");
 
             return new Exception(
                     "\r\n\r\n" +
