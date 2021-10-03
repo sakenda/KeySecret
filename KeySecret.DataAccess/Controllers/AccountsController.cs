@@ -44,13 +44,18 @@ namespace KeySecret.DataAccess.Controllers
         {
             AccountModel model = await _accountsRepository.InsertItemAsync(account);
 
-            _logger.LogInformation($"Folgender Eintrag wurde in die Datenbank geschrieben:\r\n{model.Id}\r\n{model.Name}\r\n{model.WebAdress}\r\n{model.Password}\r\n{model.CreatedDate}");
+            if (model == null)
+            {
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'model' ist NULL");
+                return BadRequest(nameof(InsertAccountAsync) + ": NULL-Object returned");
+            }
 
+            _logger.LogInformation("Es wurde ein Eintrag in die Datenbank geschrieben.");
             return CreatedAtAction(nameof(InsertAccountAsync), model);
         }
 
         [HttpPut("/api/accounts/upd")]
-        public IActionResult UpdateAccountAsync(AccountModel account)
+        public ActionResult UpdateAccountAsync(AccountModel account)
         {
             _accountsRepository.UpdateItemAsync(account);
 
@@ -60,7 +65,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpDelete("/api/accounts/del/{id}")]
-        public IActionResult DeleteAccountAsync(int id)
+        public ActionResult DeleteAccountAsync(int id)
         {
             _accountsRepository.DeleteItemAsync(id);
 

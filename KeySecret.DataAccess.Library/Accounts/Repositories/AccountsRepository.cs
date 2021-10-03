@@ -14,6 +14,12 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
         private readonly string _connectionString;
         private readonly ILogger<AccountsRepository> _logger;
 
+        private const string _spGetOne = "KeySecretDB.dbo.spAccounts_GetOneItem";
+        private const string _spGetAll = "KeySecretDB.dbo.spAccounts_GetAllItems";
+        private const string _spInsert = "KeySecretDB.dbo.spAccounts_InsertItem";
+        private const string _spUpdate = "KeySecretDB.dbo.spAccounts_UpdateItem";
+        private const string _spDelete = "KeySecretDB.dbo.spAccounts_DeleteItem";
+
         public AccountsRepository(string connectionString, ILogger<AccountsRepository> logger)
         {
             _connectionString = connectionString;
@@ -32,10 +38,11 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                 connection.Open();
 
                 AccountModel model = null;
-                string sql = "SELECT * FROM KeySecretDB.dbo.Accounts WHERE Id=@Id";
                 SqlTransaction transaction = connection.BeginTransaction(nameof(GetItemAsync));
-                SqlCommand command = new SqlCommand(sql, connection, transaction);
-                command.Parameters.Add(new SqlParameter("Id", SqlDbType.Int)).Value = id;
+
+                SqlCommand command = new SqlCommand(_spGetOne, connection, transaction);
+                command.CommandType = CommandType.StoredProcedure;
+                command.Parameters.Add(new SqlParameter("@Id", SqlDbType.Int)).Value = id;
 
                 try
                 {
@@ -49,6 +56,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                                 Name = reader["Name"].ToString(),
                                 WebAdress = reader["WebAdress"].ToString(),
                                 Password = reader["Password"].ToString(),
+                                CategoryId = Convert.ToInt32(reader["CategoryId"]),
                                 CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
                             };
                         }
@@ -76,9 +84,10 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                 connection.Open();
 
                 var list = new List<AccountModel>();
-                string sql = "SELECT * FROM KeySecretDB.dbo.Accounts";
                 SqlTransaction transaction = connection.BeginTransaction(nameof(GetItemsAsync));
-                SqlCommand command = new SqlCommand(sql, connection, transaction);
+
+                SqlCommand command = new SqlCommand(_spGetAll, connection, transaction);
+                command.CommandType = CommandType.StoredProcedure;
 
                 try
                 {
@@ -92,6 +101,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                                 Name = reader["Name"].ToString(),
                                 WebAdress = reader["WebAdress"].ToString(),
                                 Password = reader["Password"].ToString(),
+                                CategoryId = reader["CategoryId"] == DBNull.Value ? 0 : Convert.ToInt32(reader["CategoryId"]),
                                 CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
                             });
                         }
@@ -119,12 +129,14 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
             {
                 connection.Open();
 
-                string sql = "INSERT INTO KeySecretDB.dbo.Accounts (Name, WebAdress, Password) VALUES (@Name, @WebAdress, @Password)";
                 SqlTransaction transaction = connection.BeginTransaction(nameof(InsertItemAsync));
-                SqlCommand command = new SqlCommand(sql, connection, transaction);
+
+                SqlCommand command = new SqlCommand(_spInsert, connection, transaction);
+                command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name;
                 command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress;
                 command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password;
+                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId == 0 ? DBNull.Value : item.CategoryId;
 
                 try
                 {
@@ -136,12 +148,10 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
                     item.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
                     item.CreatedDate = DateTime.Now;
-
-                    await transaction.CommitAsync();
                 }
                 catch (Exception ex)
                 {
-                    await TransactionRollbackAsync(transaction, ex, nameof(InsertItemAsync));
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(InsertItemAsync));
                 }
 
                 return item;
@@ -159,13 +169,15 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
             {
                 connection.Open();
 
-                string sql = "UPDATE KeySecretDB.dbo.Accounts SET [Name] = @Name, [WebAdress] = @WebAdress, [Password] = @Password WHERE [Id] = @Id";
                 SqlTransaction transaction = connection.BeginTransaction(nameof(UpdateItemAsync));
-                SqlCommand command = new SqlCommand(sql, connection, transaction);
+                SqlCommand command = new SqlCommand(_spUpdate, connection, transaction);
+                command.CommandType = CommandType.StoredProcedure;
+
                 command.Parameters.Add(new SqlParameter("@Id", SqlDbType.NVarChar)).Value = item.Id;
                 command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name == null ? DBNull.Value : item.Name;
                 command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress == null ? DBNull.Value : item.WebAdress;
                 command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password == null ? DBNull.Value : item.Password;
+                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId == 0 ? DBNull.Value : item.CategoryId;
 
                 try
                 {
@@ -174,7 +186,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                 }
                 catch (Exception ex)
                 {
-                    await TransactionRollbackAsync(transaction, ex, nameof(UpdateItemAsync));
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(UpdateItemAsync));
                 }
             }
         }
@@ -202,7 +214,7 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                 }
                 catch (Exception ex)
                 {
-                    await TransactionRollbackAsync(transaction, ex, nameof(DeleteItemAsync));
+                    throw await TransactionRollbackAsync(transaction, ex, nameof(DeleteItemAsync));
                 }
             }
         }
