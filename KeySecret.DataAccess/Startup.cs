@@ -12,12 +12,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace KeySecret.DataAccess
 {
     public class Startup
     {
         public IConfiguration Configuration { get; }
+        public ILoggerFactory LoggerFactory { get; private set; }
         public string ConnectionString { get; set; }
 
         public Startup(IConfiguration configuration)
@@ -30,22 +32,22 @@ namespace KeySecret.DataAccess
         {
             ConnectionString = Configuration.GetConnectionString("KeySecretData");
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString));
+            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString, LoggerFactory.CreateLogger<AccountsRepository>()))
+                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(repository => new CategoryRepository(ConnectionString, LoggerFactory.CreateLogger<CategoryRepository>()));
 
-            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString))
-                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(repository => new CategoryRepository(ConnectionString));
-
-            services.AddDatabaseDeveloperPageExceptionFilter();
-
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
+                    .AddDatabaseDeveloperPageExceptionFilter()
+                    .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddControllersWithViews();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory logger)
         {
+            LoggerFactory = logger;
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

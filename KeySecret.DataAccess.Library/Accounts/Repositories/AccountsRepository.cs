@@ -1,5 +1,6 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -11,10 +12,12 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
     public class AccountsRepository : IRepository<AccountModel>
     {
         private readonly string _connectionString;
+        private readonly ILogger<AccountsRepository> _logger;
 
-        public AccountsRepository(string connectionString)
+        public AccountsRepository(string connectionString, ILogger<AccountsRepository> logger)
         {
             _connectionString = connectionString;
+            _logger = logger;
         }
 
         /// <summary>
