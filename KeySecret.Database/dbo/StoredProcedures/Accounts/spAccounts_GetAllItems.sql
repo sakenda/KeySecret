@@ -3,7 +3,12 @@ AS
 BEGIN
 	SET NOCOUNT ON;
 
-	SELECT [Id], [Name], [WebAdress], [Password], [CreatedDate]
+	SELECT [Id],
+		   [Name],
+		   [WebAdress],
+		   [Password],
+		   [CreatedDate],
+		   [CategoryId]
 	FROM Accounts
 
 END

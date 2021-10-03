@@ -1,0 +1,10 @@
+﻿CREATE PROCEDURE [dbo].[spCategories_InsertItem]
+	@Name NVARCHAR(MAX)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+	INSERT INTO Categories ([Name]) VALUES (@Name)
+
+END
+RETURN @@IDENTITY
