@@ -55,7 +55,7 @@
                 <Button Content="Remove" Click="remove"/>
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
-                <Button Content="New Pw"/>
+                <Button Content="New Pw" Click="NewPw_Click"/>
                 <Button Content="Change Pw"/>
                 <Button Content="Remove Pw"/>
                 <Button Content="Refresh" Click="Window_Loaded"/>
