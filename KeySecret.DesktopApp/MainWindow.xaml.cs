@@ -85,5 +85,16 @@ namespace KeySecret.DesktopApp
             AddPw _addPw = new AddPw(_accountEndpoint);
             _addPw.ShowDialog();
         }
+
+        private void Remove_Entry(object sender, RoutedEventArgs e)
+        {
+            _accountEndpoint.DeleteAsync(((AccountModel)lb_Accounts.SelectedItem).Id);
+            LoadAccountsAsync();
+        }
+
+        private async Task Change_Entry(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

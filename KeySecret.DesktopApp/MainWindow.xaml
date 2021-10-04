@@ -56,8 +56,8 @@
             </StackPanel>
             <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Content="New Pw" Click="NewPw_Click"/>
-                <Button Content="Change Pw"/>
-                <Button Content="Remove Pw"/>
+                <Button Content="Change Pw" Click="Change_Entry"/>
+                <Button Content="Remove" Click="Remove_Entry" />
                 <Button Content="Refresh" Click="Window_Loaded"/>
                 <Button Content="TEST" Click="TestUpdateAccount_OnClick"/>
             </StackPanel>
