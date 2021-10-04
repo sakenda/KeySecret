@@ -7,23 +7,38 @@ using FluentAssertions;
 using KeySecret.DataAccess.Controllers;
 using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
+using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace KeySecret.DataAccess.Library.Tests
 {
     public class AccountsControllerTests
     {
-        private readonly Mock<IRepository<AccountModel>> repositoryMock = new();
-        private readonly Random rand = new Random();
+        private readonly Mock<IRepository<AccountModel>> _repositoryMock = new();
+        private readonly Mock<ILogger<AccountsController>> _loggerMock = new();
+        private readonly Random _rand = new Random();
 
         private AccountModel CreateRandomItem()
         {
             return new AccountModel()
             {
-                Id = rand.Next(1000),
+                Id = _rand.Next(1000),
                 Name = Guid.NewGuid().ToString(),
                 WebAdress = Guid.NewGuid().ToString(),
                 Password = Guid.NewGuid().ToString(),
+                CategoryId = _rand.Next(1000),
                 CreatedDate = DateTime.Now
+            };
+        }
+
+        private AccountModel CreateRandomInsertItem()
+        {
+            return new AccountModel()
+            {
+                Name = Guid.NewGuid().ToString(),
+                WebAdress = Guid.NewGuid().ToString(),
+                Password = Guid.NewGuid().ToString(),
+                CategoryId = _rand.Next(1000)
             };
         }
 
@@ -32,15 +47,17 @@ namespace KeySecret.DataAccess.Library.Tests
         public async Task GetByIdAsync_WithExistingItem_ReturnAccountModel()
         {
             // Arrange
-            var controller = new AccountsController(repositoryMock.Object);
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
             var expectedItem = CreateRandomItem();
-            repositoryMock.Setup(repo => repo.GetItemAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
+            _repositoryMock.Setup(repo => repo.GetItemAsync(It.IsAny<int>())).ReturnsAsync(expectedItem);
 
             //Act
-            var result = await controller.GetByIdAsync(rand.Next());
+            var result = await controller.GetByIdAsync(_rand.Next());
 
             // Assert
-            result.Value.Should().BeEquivalentTo(expectedItem);
+            var createdItem = (result.Result as OkObjectResult).Value as AccountModel;
+            createdItem.Should().BeEquivalentTo(expectedItem);
+            result.Result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
@@ -48,11 +65,11 @@ namespace KeySecret.DataAccess.Library.Tests
         public async Task GetByIdAsync_WithNoExistingItem_ReturnsNotFound()
         {
             // Arrange
-            var controller = new AccountsController(repositoryMock.Object);
-            repositoryMock.Setup(repo => repo.GetItemAsync(It.IsAny<int>())).ReturnsAsync((AccountModel)null);
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            _repositoryMock.Setup(repo => repo.GetItemAsync(It.IsAny<int>())).ReturnsAsync((AccountModel)null);
 
             //Act
-            var result = await controller.GetByIdAsync(rand.Next());
+            var result = await controller.GetByIdAsync(_rand.Next());
 
             // Assert
             result.Result.Should().BeOfType<NotFoundResult>();
@@ -63,38 +80,90 @@ namespace KeySecret.DataAccess.Library.Tests
         public async Task GetAllAccountsAsync_WithExistingItems_ReturnsAllItems()
         {
             // Arrange
-            var controller = new AccountsController(repositoryMock.Object);
-            var expectedItems = new[] { CreateRandomItem(), CreateRandomItem(), CreateRandomItem() };
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            var expectedItems = new List<AccountModel>() { CreateRandomItem(), CreateRandomItem(), CreateRandomItem() };
 
-            repositoryMock.Setup(repo => repo.GetItemsAsync()).ReturnsAsync(expectedItems);
+            _repositoryMock.Setup(repo => repo.GetItemsAsync()).ReturnsAsync(expectedItems);
 
             // Act
             var actualItems = await controller.GetAllAccountsAsync();
 
             // Assert
-            actualItems.Should().BeEquivalentTo(expectedItems);
+            var createdItem = (actualItems.Result as OkObjectResult).Value as List<AccountModel>;
+            createdItem.Should().BeEquivalentTo(expectedItems);
+            actualItems.Result.Should().BeOfType<OkObjectResult>();
         }
 
         [Fact]
         [Trait("AccountsController", "InsertAccountAsync")]
-        public async Task InsertAccountAsync_WithItemToInsert_ReturnsCreatedItem()
+        public async Task InsertAccountAsync_WithItemToInsert_ReturnCreatedItem()
+        {
+            // Arrange
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            var insertItem = CreateRandomInsertItem();
+            var returnItem = insertItem;
+            returnItem.Id = _rand.Next(1000);
+            returnItem.CreatedDate = DateTime.Now;
+            _repositoryMock.Setup(repo => repo.InsertItemAsync(insertItem)).ReturnsAsync(returnItem);
+
+            // Act
+            var result = await controller.InsertAccountAsync(insertItem);
+
+            // Assert
+            var createdItemResult = result.Result as CreatedAtActionResult;
+            createdItemResult.Should().BeOfType<CreatedAtActionResult>();
+
+            var createdItem = createdItemResult.Value as AccountModel;
+            createdItem.Should().BeEquivalentTo(returnItem);
+        }
+
+        [Fact]
+        [Trait("AccountsController", "InsertAccountAsync")]
+        public async Task InsertAccountAsync_WithNoDBReturn_ReturnBadRequest()
+        {
+            // Arrange
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            var insertItem = CreateRandomInsertItem();
+            _repositoryMock.Setup(repo => repo.InsertItemAsync(insertItem)).ReturnsAsync((AccountModel)null);
+
+            // Act
+            var result = await controller.InsertAccountAsync(insertItem);
+
+            // Assert
+            var createdItem = result.Result as BadRequestObjectResult;
+            createdItem.Should().BeOfType<BadRequestObjectResult>();
+        }
+
+        [Fact]
+        [Trait("AccountsController", "UpdateAccountAsync")]
+        public void UpdateAccountAsync_WithValidValues_ReturnNoContent()
+        {
+            // Arrange
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            var item = CreateRandomItem();
+            _repositoryMock.Setup(repo => repo.UpdateItemAsync(item));
+
+            // Act
+            var result = controller.UpdateAccountAsync(item);
+
+            // Assert
+            result.Should().BeOfType<NoContentResult>();
+        }
+
+        [Fact]
+        [Trait("AccountsController", "DeleteAccountAsync")]
+        public void DeleteAccountAsync_WithId_ReturnNoContent()
         {
             /*
             // Arrange
-            var controller = new AccountsController(repositoryMock.Object);
-            var newItem = new InsertAccountModel(Guid.NewGuid().ToString(), Guid.NewGuid().ToString(), Guid.NewGuid().ToString());
+            var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
+            _repositoryMock.Setup(repo => repo.DeleteItemAsync(1));
 
             // Act
-            var result = await controller.InsertAccountAsync(newItem);
+            var result = controller.DeleteAccountAsync(1);
 
             // Assert
-            var createdItem = (result.Result as CreatedAtActionResult).Value as AccountModel;
-            newItem.Should().BeEquivalentTo(
-                createdItem,
-                options => options.ComparingByMembers<InsertAccountModel>().ExcludingMissingMembers()
-                );
-            createdItem.CreatedDate.Should().BeCloseTo(DateTime.Now, TimeSpan.FromSeconds(1));
-            */
+            result.Should().BeOfType<NoContentResult>();
         }
     }
 }

@@ -5,26 +5,18 @@ using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace KeySecret.DesktopApp
 {
     public partial class MainWindow : Window
     {
         public static string _categorie { get; set; }
+        public static ObservableCollection<AccountModel> AccountsList { get; set; }
 
-        private IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> _accountEndpoint;
-        private static ObservableCollection<AccountModel> _accountsList;
+        private readonly IEndpoint<AccountModel> _accountEndpoint;
 
-        public static ObservableCollection<AccountModel> AccountsList
-        {
-            get => _accountsList;
-            set
-            {
-                _accountsList = value;
-            }
-        }
-
-        public MainWindow(IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> accountEndpoint)
+        public MainWindow(IEndpoint<AccountModel> accountEndpoint)
         {
             InitializeComponent();
 
@@ -34,16 +26,18 @@ namespace KeySecret.DesktopApp
             lb_Accounts.ItemsSource = AccountsList;
         }
 
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) => this.DragMove();
+
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
 
-        private void add(object sender, RoutedEventArgs e)
+        private void Add(object sender, RoutedEventArgs e)
         {
             AddDialog _dialogBox = new AddDialog();
             _dialogBox.ShowDialog();
             Categorie_Area.Items.Add(_categorie);
         }
 
-        private void remove(object sender, RoutedEventArgs e)
+        private void Remove(object sender, RoutedEventArgs e)
         {
             if (Categorie_Area.SelectedItem == null || Categorie_Area.SelectedItem.Equals(Allgemein))
             {
@@ -59,7 +53,6 @@ namespace KeySecret.DesktopApp
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-           
             await LoadAccountsAsync();
         }
 
@@ -68,10 +61,9 @@ namespace KeySecret.DesktopApp
             if (AccountsList == null)
                 AccountsList = new ObservableCollection<AccountModel>();
 
-            _accountsList.Clear();
-            var list = await _accountEndpoint.GetAllAsync();
+            AccountsList.Clear();
 
-            foreach (var item in list)
+            foreach (var item in await _accountEndpoint.GetAllAsync())
             {
                 AccountsList.Add(item);
             }
@@ -79,11 +71,11 @@ namespace KeySecret.DesktopApp
 
         private void TestUpdateAccount_OnClick(object sender, RoutedEventArgs e)
         {
-            var item = new UpdateAccountModel();
-            item.Id = _accountsList[0].Id;
-            item.Name = _accountsList[0].Name + "*updated*";
-            item.WebAdress = _accountsList[0].WebAdress;
-            item.Password = _accountsList[0].Password;
+            var item = new AccountModel();
+            item.Id = AccountsList[2].Id;
+            item.Name = AccountsList[2].Name + "*updated*";
+            item.WebAdress = AccountsList[2].WebAdress;
+            item.Password = AccountsList[2].Password;
 
             _accountEndpoint.UpdateAsync(item);
         }

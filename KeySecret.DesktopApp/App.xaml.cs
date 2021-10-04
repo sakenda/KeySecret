@@ -30,9 +30,8 @@ namespace KeySecret.DesktopApp
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IApiHelper, ApiHelper>()
-                    .AddSingleton<IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel>, AccountEndpoint>();
-
-            services.AddTransient(typeof(MainWindow));
+                    .AddSingleton<IEndpoint<AccountModel>, AccountEndpoint>()
+                    .AddSingleton(typeof(MainWindow));
         }
     }
 }
