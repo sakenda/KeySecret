@@ -24,8 +24,8 @@ namespace KeySecret.DesktopApp
     /// </summary>
     public partial class AddPw : Window
     {
-        private IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> _accountEndpoint;
-        public AddPw(IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> accountEndpoint)
+        private IEndpoint<AccountModel> _accountEndpoint;
+        public AddPw(IEndpoint<AccountModel> accountEndpoint)
         {
             InitializeComponent();
             _accountEndpoint = accountEndpoint;
@@ -48,7 +48,7 @@ namespace KeySecret.DesktopApp
 
         private async void New_Entry_Click(object sender, RoutedEventArgs e)
         {
-            InsertAccountModel model = new InsertAccountModel();
+            AccountModel model = new AccountModel();
 
             model.Name = NameBox.Text;
             model.WebAdress = WebadressBox.Text;
