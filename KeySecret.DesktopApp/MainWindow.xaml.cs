@@ -13,9 +13,9 @@ namespace KeySecret.DesktopApp
         public static string _categorie { get; set; }
 
         private IEndpoint<AccountModel, UpdateAccountModel, InsertAccountModel> _accountEndpoint;
-        private ObservableCollection<AccountModel> _accountsList;
+        private static ObservableCollection<AccountModel> _accountsList;
 
-        public ObservableCollection<AccountModel> AccountsList
+        public static ObservableCollection<AccountModel> AccountsList
         {
             get => _accountsList;
             set
@@ -59,15 +59,16 @@ namespace KeySecret.DesktopApp
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _accountsList.Clear();
+           
             await LoadAccountsAsync();
         }
 
-        private async Task LoadAccountsAsync()
+        public async Task LoadAccountsAsync()
         {
             if (AccountsList == null)
                 AccountsList = new ObservableCollection<AccountModel>();
 
+            _accountsList.Clear();
             var list = await _accountEndpoint.GetAllAsync();
 
             foreach (var item in list)
@@ -85,6 +86,12 @@ namespace KeySecret.DesktopApp
             item.Password = _accountsList[0].Password;
 
             _accountEndpoint.UpdateAsync(item);
+        }
+
+        private void NewPw_Click(object sender, RoutedEventArgs e)
+        {
+            AddPw _addPw = new AddPw(_accountEndpoint);
+            _addPw.ShowDialog();
         }
     }
 }
