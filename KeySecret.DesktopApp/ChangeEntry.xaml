@@ -1,0 +1,75 @@
+﻿<Window x:Class="KeySecret.DesktopApp.ChangeEntry"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:KeySecret.DesktopApp"
+        mc:Ignorable="d"
+        Title="AddPw" Height="400" Width="400"
+        WindowStartupLocation="CenterScreen"
+        Style="{StaticResource {x:Type Window}}">
+    <Grid>
+        <Border>
+            <StackPanel>
+                <Button
+                    Background="Transparent"
+                    Content="X"
+                    Height="Auto"
+                    Width="Auto"
+                    
+                    HorizontalAlignment="Right"
+                    Margin="10 10 10 10" 
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Click="Exit_Click"/>
+                <Label Content="Change Entry"
+                   HorizontalAlignment="Center"
+                   FontSize="36"
+                   Margin="15"/>
+                <TextBox
+                     Name="Name"
+                     Text="{Binding NameBox, Mode=TwoWay}"
+                     Foreground="Gray"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     GotFocus="NameBox_GotFocus"
+                     Width="250"
+                     FontSize="26"
+                     Margin="0 0 0 15"/>
+                <TextBox
+                     Name="WebAdress"
+                     Text="{Binding WebadressBox, Mode=TwoWay}"
+                     Foreground="Gray"
+                     HorizontalContentAlignment="Center"
+                     VerticalContentAlignment="Center"
+                     GotFocus="WebadressBox_GotFocus"
+                     Width="250"
+                     FontSize="26"
+                     Margin="0 0 0 15"/>
+
+
+                <TextBlock
+                    Name="PasswordTextBlock"
+                     Text="Password"
+                     Foreground="Gray"
+                     TextAlignment="Center"
+                     Width="250"
+                     FontSize="26"
+                     />
+                <PasswordBox
+                    PasswordChanged="PasswordBox_PasswordChanged"
+                    FontSize="26" 
+                    Width="250"
+                    Background="Transparent"
+                    VerticalContentAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    GotFocus="PasswordBox_GotFocus">
+                    <PasswordBox.RenderTransform>
+                        <TranslateTransform Y="-35" />
+                    </PasswordBox.RenderTransform>
+                </PasswordBox>
+                <Button Content="Change Entry" Width="80" Click="Change_Entry"/>
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

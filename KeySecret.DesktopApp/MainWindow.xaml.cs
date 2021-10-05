@@ -56,7 +56,7 @@ namespace KeySecret.DesktopApp
             await LoadAccountsAsync();
         }
 
-        private async Task LoadAccountsAsync()
+        public async Task LoadAccountsAsync()
         {
             if (AccountsList == null)
                 AccountsList = new ObservableCollection<AccountModel>();
@@ -78,6 +78,30 @@ namespace KeySecret.DesktopApp
             item.Password = AccountsList[2].Password;
 
             _accountEndpoint.UpdateAsync(item);
+        }
+
+        private void NewPw_Click(object sender, RoutedEventArgs e)
+        {
+            AddPw _addPw = new AddPw(_accountEndpoint);
+            _addPw.ShowDialog();
+        }
+
+        private void Remove_Entry(object sender, RoutedEventArgs e)
+        {
+            _accountEndpoint.DeleteAsync(((AccountModel)lb_Accounts.SelectedItem).Id);
+            LoadAccountsAsync();
+        }
+
+        private void Change_Entry(object sender, RoutedEventArgs e)
+        {
+            AccountModel model = new AccountModel();
+
+            model.Name = ((AccountModel)lb_Accounts.SelectedItem).Name;
+            model.WebAdress = ((AccountModel)lb_Accounts.SelectedItem).WebAdress;
+            model.Password = ((AccountModel)lb_Accounts.SelectedItem).Password;
+
+            ChangeEntry _change = new ChangeEntry(_accountEndpoint, model);
+            _change.ShowDialog();
         }
     }
 }
