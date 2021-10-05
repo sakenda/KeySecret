@@ -63,12 +63,18 @@ namespace KeySecret.DesktopApp
 
             await _accountEndpoint.InsertAsync(model);
             await ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
+            this.Close();
         }
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (this.DataContext != null)
                 ((dynamic)this.DataContext).PasswordBox = ((PasswordBox)sender).Password;
+        }
+
+        private void Exit_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

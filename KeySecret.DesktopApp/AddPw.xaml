@@ -11,12 +11,23 @@
     <Grid>
         <Border>
             <StackPanel>
+                <Button
+                    Background="Transparent"
+                    Content="X"
+                    Height="Auto"
+                    Width="Auto"
+                    
+                    HorizontalAlignment="Right"
+                    Margin="10 10 10 10" 
+                    FontWeight="Bold"
+                    FontSize="20"
+                    Click="Exit_Click"/>
                 <Label Content="New Entry"
                    HorizontalAlignment="Center"
                    FontSize="36"
                    Margin="15"/>
                 <TextBox 
-                     Name="Name"
+                     x:Name="Name"
                      Text="{Binding NameBox, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
@@ -26,7 +37,7 @@
                      FontSize="26"
                      Margin="0 0 0 15"/>
                 <TextBox 
-                     Name="Webadress"
+                     x:Name="Webadress"
                      Text="{Binding WebadressBox, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
@@ -38,7 +49,7 @@
 
 
                 <TextBlock
-                    Name="PasswordTextBlock"
+                    x:Name="PasswordTextBlock"
                      Text="Password"
                      Foreground="Gray"
                      TextAlignment="Center"
@@ -57,7 +68,7 @@
                         <TranslateTransform Y="-35" />
                     </PasswordBox.RenderTransform>
                 </PasswordBox>
-                    <Button Content="New Entry" Width="80" Click="New_Entry_Click"/>
+                <Button Content="New Entry" Width="80" Click="New_Entry_Click"/>
             </StackPanel>
         </Border>
     </Grid>
