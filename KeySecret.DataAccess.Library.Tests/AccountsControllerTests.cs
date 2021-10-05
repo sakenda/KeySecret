@@ -154,7 +154,6 @@ namespace KeySecret.DataAccess.Library.Tests
         [Trait("AccountsController", "DeleteAccountAsync")]
         public void DeleteAccountAsync_WithId_ReturnNoContent()
         {
-            /*
             // Arrange
             var controller = new AccountsController(_repositoryMock.Object, _loggerMock.Object);
             _repositoryMock.Setup(repo => repo.DeleteItemAsync(1));
@@ -164,7 +163,6 @@ namespace KeySecret.DataAccess.Library.Tests
 
             // Assert
             result.Should().BeOfType<NoContentResult>();
-            */
         }
     }
 }
