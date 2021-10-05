@@ -16,9 +16,9 @@
                     Content="X"
                     Height="Auto"
                     Width="Auto"
-                    
+
                     HorizontalAlignment="Right"
-                    Margin="10 10 10 10" 
+                    Margin="10 10 10 10"
                     FontWeight="Bold"
                     FontSize="20"
                     Click="Exit_Click"/>
@@ -28,7 +28,7 @@
                    Margin="15"/>
                 <TextBox
                      Name="Name"
-                     Text="{Binding NameBox, Mode=TwoWay}"
+                     Text="{Binding Model.Name, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -38,7 +38,7 @@
                      Margin="0 0 0 15"/>
                 <TextBox
                      Name="WebAdress"
-                     Text="{Binding WebadressBox, Mode=TwoWay}"
+                     Text="{Binding Model.WebAdress, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -47,25 +47,24 @@
                      FontSize="26"
                      Margin="0 0 0 15"/>
 
-
                 <TextBlock
                     Name="PasswordTextBlock"
                      Text="Password"
                      Foreground="Gray"
                      TextAlignment="Center"
                      Width="250"
-                     FontSize="26"
-                     />
+                     FontSize="26"/>
                 <PasswordBox
+                    x:Name="pwb_Password"
                     PasswordChanged="PasswordBox_PasswordChanged"
-                    FontSize="26" 
+                    FontSize="26"
                     Width="250"
                     Background="Transparent"
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
                     GotFocus="PasswordBox_GotFocus">
                     <PasswordBox.RenderTransform>
-                        <TranslateTransform Y="-35" />
+                        <TranslateTransform Y="-35"/>
                     </PasswordBox.RenderTransform>
                 </PasswordBox>
                 <Button Content="Change Entry" Width="80" Click="Change_Entry"/>

@@ -23,35 +23,25 @@ namespace KeySecret.DesktopApp
     /// </summary>
     public partial class ChangeEntry : Window
     {
-        public string NameBox {get;set;}
-        public string WebadressBox { get; set; }
-        public string PasswordBox { get; set; }
+        private readonly IEndpoint<AccountModel> _accountEndpoint;
 
-        private AccountModel _model { get; set; }
-        private IEndpoint<AccountModel> _accountEndpoint;
+        public AccountModel Model { get; set; }
+
         public ChangeEntry(IEndpoint<AccountModel> accountEndpoint, AccountModel model)
         {
             InitializeComponent();
             _accountEndpoint = accountEndpoint;
-            _model = model;
+            Model = model;
 
             this.DataContext = this;
-
-            NameBox = _model.Name;
-            WebadressBox = _model.WebAdress;
         }
 
-        private void Change_Entry(object sender, RoutedEventArgs e)
+        private async void Change_Entry(object sender, RoutedEventArgs e)
         {
-            _model.Name = NameBox;
-            _model.WebAdress = WebadressBox;
-            _model.Password = PasswordBox;
-
-            _accountEndpoint.UpdateAsync(_model);
-            ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
+            await _accountEndpoint.UpdateAsync(Model);
+            await ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
 
             this.Close();
-            
         }
 
         private void NameBox_GotFocus(object sender, RoutedEventArgs e)
@@ -71,8 +61,7 @@ namespace KeySecret.DesktopApp
 
         private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            if(this.DataContext != null)
-                ((dynamic)this.DataContext).PasswordBox = ((PasswordBox)sender).Password;
+            Model.Password = pwb_Password.Password;
         }
 
         private void Exit_Click(object sender, RoutedEventArgs e)

@@ -29,6 +29,10 @@ namespace KeySecret.DesktopApp
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) => this.DragMove();
 
         private void Exit_Click(object sender, RoutedEventArgs e) => Environment.Exit(0);
+        private void Quit_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
+        }
 
         private void Add(object sender, RoutedEventArgs e)
         {
@@ -43,12 +47,8 @@ namespace KeySecret.DesktopApp
             {
                 return;
             }
-            Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
-        }
 
-        private void Quit_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
+            Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -71,13 +71,13 @@ namespace KeySecret.DesktopApp
 
         private void TestUpdateAccount_OnClick(object sender, RoutedEventArgs e)
         {
-            var item = new AccountModel();
-            item.Id = AccountsList[2].Id;
-            item.Name = AccountsList[2].Name + "*updated*";
-            item.WebAdress = AccountsList[2].WebAdress;
-            item.Password = AccountsList[2].Password;
+            //var item = new AccountModel();
+            //item.Id = AccountsList[2].Id;
+            //item.Name = AccountsList[2].Name + "*updated*";
+            //item.WebAdress = AccountsList[2].WebAdress;
+            //item.Password = AccountsList[2].Password;
 
-            _accountEndpoint.UpdateAsync(item);
+            //_accountEndpoint.UpdateAsync(item);
         }
 
         private void NewPw_Click(object sender, RoutedEventArgs e)
@@ -86,21 +86,17 @@ namespace KeySecret.DesktopApp
             _addPw.ShowDialog();
         }
 
-        private void Remove_Entry(object sender, RoutedEventArgs e)
+        private async void Remove_Entry(object sender, RoutedEventArgs e)
         {
-            _accountEndpoint.DeleteAsync(((AccountModel)lb_Accounts.SelectedItem).Id);
-            LoadAccountsAsync();
+            AccountModel model = (AccountModel)lb_Accounts.SelectedItem;
+
+            await _accountEndpoint.DeleteAsync(model.Id);
+            await LoadAccountsAsync();
         }
 
         private void Change_Entry(object sender, RoutedEventArgs e)
         {
-            AccountModel model = new AccountModel();
-
-            model.Name = ((AccountModel)lb_Accounts.SelectedItem).Name;
-            model.WebAdress = ((AccountModel)lb_Accounts.SelectedItem).WebAdress;
-            model.Password = ((AccountModel)lb_Accounts.SelectedItem).Password;
-
-            ChangeEntry _change = new ChangeEntry(_accountEndpoint, model);
+            ChangeEntry _change = new ChangeEntry(_accountEndpoint, (AccountModel)lb_Accounts.SelectedItem);
             _change.ShowDialog();
         }
     }
