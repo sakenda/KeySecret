@@ -16,8 +16,8 @@
                    FontSize="36"
                    Margin="15"/>
                 <TextBox 
-                     Name="NameBox"
-                     Text="Name"
+                     Name="Name"
+                     Text="{Binding NameBox, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -26,8 +26,8 @@
                      FontSize="26"
                      Margin="0 0 0 15"/>
                 <TextBox 
-                     Name="WebadressBox"
-                     Text="Webadress"
+                     Name="Webadress"
+                     Text="{Binding WebadressBox, Mode=TwoWay}"
                      Foreground="Gray"
                      HorizontalContentAlignment="Center"
                      VerticalContentAlignment="Center"
@@ -46,10 +46,12 @@
                      FontSize="26"
                      />
                 <PasswordBox
-                    Name="PasswordBox"
+                    PasswordChanged="PasswordBox_PasswordChanged"
                     FontSize="26" 
                     Width="250" 
                     Background="Transparent"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     GotFocus="PasswordBox_GotFocus">
                     <PasswordBox.RenderTransform>
                         <TranslateTransform Y="-35" />

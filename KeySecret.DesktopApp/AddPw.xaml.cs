@@ -24,11 +24,16 @@ namespace KeySecret.DesktopApp
     /// </summary>
     public partial class AddPw : Window
     {
+        public string NameBox { get; set; } = "Name";
+        public string WebadressBox { get; set; } = "Webadress";
+        public string PasswordBox { get; set; } = "";
+
         private IEndpoint<AccountModel> _accountEndpoint;
         public AddPw(IEndpoint<AccountModel> accountEndpoint)
         {
             InitializeComponent();
             _accountEndpoint = accountEndpoint;
+            this.DataContext = this;
         }
 
         private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
@@ -38,24 +43,32 @@ namespace KeySecret.DesktopApp
 
         private void NameBox_GotFocus(object sender, RoutedEventArgs e)
         {
-
+            Name.Foreground = new SolidColorBrush(Colors.Black);
+            Name.Clear();
         }
 
         private void WebAdress_GotFocus(object sender, RoutedEventArgs e)
         {
-
+            Webadress.Foreground = new SolidColorBrush(Colors.Black);
+            Webadress.Clear();
         }
 
         private async void New_Entry_Click(object sender, RoutedEventArgs e)
         {
             AccountModel model = new AccountModel();
 
-            model.Name = NameBox.Text;
-            model.WebAdress = WebadressBox.Text;
-            model.Password = PasswordBox.Password;
+            model.Name = NameBox;
+            model.WebAdress = WebadressBox;
+            model.Password = PasswordBox;
 
             await _accountEndpoint.InsertAsync(model);
             await ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (this.DataContext != null)
+                ((dynamic)this.DataContext).PasswordBox = ((PasswordBox)sender).Password;
         }
     }
 }
