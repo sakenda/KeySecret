@@ -92,9 +92,16 @@ namespace KeySecret.DesktopApp
             LoadAccountsAsync();
         }
 
-        private async Task Change_Entry(object sender, RoutedEventArgs e)
+        private void Change_Entry(object sender, RoutedEventArgs e)
         {
+            AccountModel model = new AccountModel();
 
+            model.Name = ((AccountModel)lb_Accounts.SelectedItem).Name;
+            model.WebAdress = ((AccountModel)lb_Accounts.SelectedItem).WebAdress;
+            model.Password = ((AccountModel)lb_Accounts.SelectedItem).Password;
+
+            ChangeEntry _change = new ChangeEntry(_accountEndpoint, model);
+            _change.ShowDialog();
         }
     }
 }
