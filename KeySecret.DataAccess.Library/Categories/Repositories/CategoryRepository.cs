@@ -1,4 +1,5 @@
 ﻿using KeySecret.DataAccess.Library.Categories.Models;
+using KeySecret.DataAccess.Library.Helper;
 using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -26,6 +27,11 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
             _logger = logger;
         }
 
+        /// <summary>
+        /// Sends query to the Database to request one category by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<CategoryModel> GetItemAsync(int id)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -47,7 +53,7 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                         {
                             model = new CategoryModel()
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
+                                Id = reader["Id"].DBToValue<int>(),
                                 Name = reader["Name"].ToString()
                             };
                         }
@@ -64,6 +70,10 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
             }
         }
 
+        /// <summary>
+        /// Sends query to database to request all categories
+        /// </summary>
+        /// <returns></returns>
         public async Task<IEnumerable<CategoryModel>> GetItemsAsync()
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -84,7 +94,7 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                         {
                             list.Add(new CategoryModel
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
+                                Id = reader["Id"].DBToValue<int>(),
                                 Name = reader["Name"].ToString()
                             });
                         }
@@ -101,6 +111,11 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
             }
         }
 
+        /// <summary>
+        /// Sends query to insert a new category to the databse
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task<CategoryModel> InsertItemAsync(CategoryModel item)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -111,7 +126,7 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
 
                 SqlCommand command = new SqlCommand(_spInsert, connection, transaction);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name;
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name.StringToDb();
 
                 try
                 {
@@ -132,6 +147,11 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
             }
         }
 
+        /// <summary>
+        /// Sends a query to the database to update a category
+        /// </summary>
+        /// <param name="item"></param>
+        /// <returns></returns>
         public async Task UpdateItemAsync(CategoryModel item)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -143,7 +163,7 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.Add(new SqlParameter("@Id", SqlDbType.NVarChar)).Value = item.Id;
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name == null ? DBNull.Value : item.Name;
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name.StringToDb();
 
                 try
                 {
@@ -157,6 +177,11 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
             }
         }
 
+        /// <summary>
+        /// Sends a query to delete a category in the database
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task DeleteItemAsync(int id)
         {
             using (SqlConnection connection = new SqlConnection(_connectionString))
@@ -180,7 +205,6 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                 }
             }
         }
-
 
         /// <summary>
         /// Tries a Rollback. If it fails, the method will return a Exception

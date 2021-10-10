@@ -1,4 +1,5 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
+using KeySecret.DataAccess.Library.Helper;
 using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.Extensions.Logging;
 using System;
@@ -52,12 +53,12 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                         {
                             model = new AccountModel()
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
+                                Id = reader["Id"].DBToValue<int>(),
                                 Name = reader["Name"].ToString(),
                                 WebAdress = reader["WebAdress"].ToString(),
                                 Password = reader["Password"].ToString(),
-                                CategoryId = Convert.ToInt32(reader["CategoryId"]),
-                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                                CategoryId = reader["CategoryId"].DBToValue<int>(),
+                                CreatedDate = reader["CreatedDate"].DBToValue<DateTime>()
                             };
                         }
                     }
@@ -97,12 +98,12 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                         {
                             list.Add(new AccountModel
                             {
-                                Id = Convert.ToInt32(reader["Id"]),
+                                Id = reader["Id"].DBToValue<int>(),
                                 Name = reader["Name"].ToString(),
                                 WebAdress = reader["WebAdress"].ToString(),
                                 Password = reader["Password"].ToString(),
-                                CategoryId = reader["CategoryId"] == DBNull.Value ? 0 : Convert.ToInt32(reader["CategoryId"]),
-                                CreatedDate = Convert.ToDateTime(reader["CreatedDate"])
+                                CategoryId = reader["CategoryId"].DBToValue<int>(),
+                                CreatedDate = reader["CreatedDate"].DBToValue<DateTime>()
                             });
                         }
                     }
@@ -133,10 +134,10 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
 
                 SqlCommand command = new SqlCommand(_spInsert, connection, transaction);
                 command.CommandType = CommandType.StoredProcedure;
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name;
-                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress;
-                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password;
-                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId == 0 ? DBNull.Value : item.CategoryId;
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name.StringToDb();
+                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress.StringToDb();
+                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password.StringToDb();
+                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId.ValueToDB<int>();
 
                 try
                 {
@@ -174,10 +175,10 @@ namespace KeySecret.DataAccess.Library.Accounts.Repositories
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.Add(new SqlParameter("@Id", SqlDbType.NVarChar)).Value = item.Id;
-                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name == null ? DBNull.Value : item.Name;
-                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress == null ? DBNull.Value : item.WebAdress;
-                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password == null ? DBNull.Value : item.Password;
-                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId == 0 ? DBNull.Value : item.CategoryId;
+                command.Parameters.Add(new SqlParameter("@Name", SqlDbType.NVarChar)).Value = item.Name.StringToDb();
+                command.Parameters.Add(new SqlParameter("@WebAdress", SqlDbType.NVarChar)).Value = item.WebAdress.StringToDb();
+                command.Parameters.Add(new SqlParameter("@Password", SqlDbType.NVarChar)).Value = item.Password.StringToDb();
+                command.Parameters.Add(new SqlParameter("@CategoryId", SqlDbType.Int)).Value = item.CategoryId.ValueToDB<int>();
 
                 try
                 {
