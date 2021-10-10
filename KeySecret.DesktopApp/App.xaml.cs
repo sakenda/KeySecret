@@ -1,4 +1,5 @@
 ﻿using KeySecret.DesktopApp.Library.Accounts.Models;
+using KeySecret.DesktopApp.Library.Categories.Models;
 using KeySecret.DesktopApp.Library.DataAccess;
 using KeySecret.DesktopApp.Library.Helper;
 using KeySecret.DesktopApp.Library.Interfaces;
@@ -31,6 +32,7 @@ namespace KeySecret.DesktopApp
         {
             services.AddSingleton<IApiHelper, ApiHelper>()
                     .AddSingleton<IEndpoint<AccountModel>, AccountEndpoint>()
+                    .AddSingleton<IEndpoint<CategoryModel>, CategoriesEndpoint>()
                     .AddSingleton(typeof(MainWindow));
         }
     }

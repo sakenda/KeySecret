@@ -1,4 +1,5 @@
 ﻿using KeySecret.DesktopApp.Library.Accounts.Models;
+using KeySecret.DesktopApp.Library.Categories.Models;
 using KeySecret.DesktopApp.Library.Interfaces;
 
 using System;
@@ -12,18 +13,27 @@ namespace KeySecret.DesktopApp
     public partial class MainWindow : Window
     {
         public static string _categorie { get; set; }
+
         public static ObservableCollection<AccountModel> AccountsList { get; set; }
+        public static ObservableCollection<CategoryModel> CategoryList { get; set; }
+
 
         private readonly IEndpoint<AccountModel> _accountEndpoint;
 
-        public MainWindow(IEndpoint<AccountModel> accountEndpoint)
+        private readonly IEndpoint<CategoryModel> _categoryEndpoint;
+
+        public MainWindow(IEndpoint<AccountModel> accountEndpoint, IEndpoint<CategoryModel> categoryEndpoint)
         {
             InitializeComponent();
 
             _accountEndpoint = accountEndpoint;
+            _categoryEndpoint = categoryEndpoint;
 
             AccountsList = new ObservableCollection<AccountModel>();
+            CategoryList = new ObservableCollection<CategoryModel>();
+
             lb_Accounts.ItemsSource = AccountsList;
+            Categorie_Area.ItemsSource = CategoryList;
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) => this.DragMove();
@@ -43,30 +53,19 @@ namespace KeySecret.DesktopApp
 
         private void Remove(object sender, RoutedEventArgs e)
         {
-            if (Categorie_Area.SelectedItem == null || Categorie_Area.SelectedItem.Equals(Allgemein))
-            {
-                return;
-            }
+            // Da nun die Datenbank Models geladen werden ist diese Logik hinfällig
 
-            Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
+            //if (Categorie_Area.SelectedItem == null || Categorie_Area.SelectedItem.Equals(Allgemein))
+            //{
+            //    return;
+            //}
+            //Categorie_Area.Items.Remove(Categorie_Area.SelectedItem);
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             await LoadAccountsAsync();
-        }
-
-        public async Task LoadAccountsAsync()
-        {
-            if (AccountsList == null)
-                AccountsList = new ObservableCollection<AccountModel>();
-
-            AccountsList.Clear();
-
-            foreach (var item in await _accountEndpoint.GetAllAsync())
-            {
-                AccountsList.Add(item);
-            }
+            await LoadCategoriesAsync();
         }
 
         private void TestUpdateAccount_OnClick(object sender, RoutedEventArgs e)
@@ -99,5 +98,32 @@ namespace KeySecret.DesktopApp
             ChangeEntry _change = new ChangeEntry(_accountEndpoint, (AccountModel)lb_Accounts.SelectedItem);
             _change.ShowDialog();
         }
+
+        public async Task LoadAccountsAsync()
+        {
+            if (AccountsList == null)
+                AccountsList = new ObservableCollection<AccountModel>();
+
+            AccountsList.Clear();
+
+            foreach (var item in await _accountEndpoint.GetAllAsync())
+            {
+                AccountsList.Add(item);
+            }
+        }
+
+        public async Task LoadCategoriesAsync()
+        {
+            if (CategoryList == null)
+                CategoryList = new ObservableCollection<CategoryModel>();
+
+            CategoryList.Clear();
+
+            foreach (var item in await _categoryEndpoint.GetAllAsync())
+            {
+                CategoryList.Add(item);
+            }
+        }
+
     }
 }

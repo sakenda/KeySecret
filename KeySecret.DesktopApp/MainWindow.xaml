@@ -29,7 +29,6 @@
             </Grid.ColumnDefinitions>
             <!-- Categorie Area-->
             <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
-                <ListBoxItem Content="Show All" Name="Allgemein"/>
             </ListBox>
 
             <!-- Data Area-->
