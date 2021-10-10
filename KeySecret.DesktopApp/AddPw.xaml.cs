@@ -1,21 +1,8 @@
 ﻿using KeySecret.DesktopApp.Library.Accounts.Models;
-using KeySecret.DesktopApp.Library.DataAccess;
 using KeySecret.DesktopApp.Library.Interfaces;
-
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace KeySecret.DesktopApp
 {
@@ -61,8 +48,11 @@ namespace KeySecret.DesktopApp
             model.WebAdress = WebadressBox;
             model.Password = PasswordBox;
 
-            await _accountEndpoint.InsertAsync(model);
-            await ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
+            var insertItem = await _accountEndpoint.InsertAsync(model);
+            MainWindow.AccountsList.Add(insertItem);
+
+            //await _accountEndpoint.InsertAsync(model);
+            //await ((MainWindow)Application.Current.MainWindow).LoadAccountsAsync();
             this.Close();
         }
 

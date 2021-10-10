@@ -18,23 +18,6 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         }
 
         /// <summary>
-        /// Abfrage eines AccountItems an die API
-        /// </summary>
-        /// <returns>Alle Accounteintrage der DB</returns>
-        public async Task<AccountModel> GetById(int id)
-        {
-            using (HttpResponseMessage response = await _apiHelper.Client.GetAsync("api/accounts/" + id))
-            {
-                if (!response.IsSuccessStatusCode)
-                    throw new Exception(response.ReasonPhrase);
-
-                var result = await response.Content.ReadAsAsync<AccountModel>();
-
-                return result;
-            }
-        }
-
-        /// <summary>
         /// Abfrage aller AccountItems an die API
         /// </summary>
         /// <returns>Alle Accounteintrage der DB</returns>
@@ -52,16 +35,19 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         }
 
         /// <summary>
-        /// Sendet eine Anfrage an die API und aktualisiert ein Account auf dem Server
+        /// Abfrage eines AccountItems an die API
         /// </summary>
-        /// <param name="item">Der Eintrag mit den aktualisierten Daten</param>
-        /// <returns></returns>
-        public async Task UpdateAsync(AccountModel item)
+        /// <returns>Alle Accounteintrage der DB</returns>
+        public async Task<AccountModel> GetById(int id)
         {
-            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/accounts/upd", item))
+            using (HttpResponseMessage response = await _apiHelper.Client.GetAsync("api/accounts/" + id))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
+
+                var result = await response.Content.ReadAsAsync<AccountModel>();
+
+                return result;
             }
         }
 
@@ -70,9 +56,25 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         /// </summary>
         /// <param name="item">Der Eintrag mit dem neuen Datensatz</param>
         /// <returns></returns>
-        public async Task InsertAsync(AccountModel item)
+        public async Task<AccountModel> InsertAsync(AccountModel item)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/accounts/ins", item))
+            {
+                if (!response.IsSuccessStatusCode)
+                    throw new Exception(response.ReasonPhrase);
+
+                return await response.Content.ReadAsAsync<AccountModel>();
+            }
+        }
+
+        /// <summary>
+        /// Sendet eine Anfrage an die API und aktualisiert ein Account auf dem Server
+        /// </summary>
+        /// <param name="item">Der Eintrag mit den aktualisierten Daten</param>
+        /// <returns></returns>
+        public async Task UpdateAsync(AccountModel item)
+        {
+            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/accounts/upd", item))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
