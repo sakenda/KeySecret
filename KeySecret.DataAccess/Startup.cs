@@ -1,10 +1,11 @@
+using KeySecret.DataAccess.Authentication;
 using KeySecret.DataAccess.Data;
 using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Accounts.Repositories;
 using KeySecret.DataAccess.Library.Categories.Models;
 using KeySecret.DataAccess.Library.Categories.Repositories;
 using KeySecret.DataAccess.Library.Interfaces;
-
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -13,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace KeySecret.DataAccess
 {
@@ -32,15 +35,42 @@ namespace KeySecret.DataAccess
         {
             ConnectionString = Configuration.GetConnectionString("KeySecretData");
 
+            // Authorization
+            services.AddIdentity<ApplicationUser, IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddDefaultTokenProviders();
+
+            services.AddAuthentication(options =>
+                    {
+                        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                        options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                    })
+                    .AddJwtBearer(options =>
+                    {
+                        options.SaveToken = true;
+                        options.RequireHttpsMetadata = false;
+                        options.TokenValidationParameters = new TokenValidationParameters()
+                        {
+                            ValidateIssuer = true,
+                            ValidateAudience = true,
+                            ValidAudience = Configuration["JWT:ValidAudience"],
+                            ValidIssuer = Configuration["JWT:ValidIssuer"],
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                        };
+                    });
+
+            // Database
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
+                    .AddDatabaseDeveloperPageExceptionFilter();
+
+            // Singletons
             services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString, LoggerFactory.CreateLogger<AccountsRepository>()))
                     .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(repository => new CategoryRepository(ConnectionString, LoggerFactory.CreateLogger<CategoryRepository>()));
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
-                    .AddDatabaseDeveloperPageExceptionFilter()
-                    .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
-
+            // Controllers
             services.AddControllersWithViews();
+            services.AddRazorPages();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,6 +89,7 @@ namespace KeySecret.DataAccess
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
+    //[Authorize]
+    [ApiController]
     public class CategoriesController : ControllerBase
     {
         private readonly IRepository<CategoryModel> _categoriesRepository;

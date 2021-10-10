@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
+    //[Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
     {
