@@ -50,7 +50,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpPost("/api/accounts/ins")]
-        public async Task<ActionResult<AccountModel>> InsertAccountAsync(AccountModel account)
+        public async Task<ActionResult<AccountModel>> InsertAccountAsync([FromBody] AccountModel account)
         {
             AccountModel model = await _accountsRepository.InsertItemAsync(account);
 
@@ -65,7 +65,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpPut("/api/accounts/upd")]
-        public ActionResult UpdateAccountAsync(AccountModel account)
+        public ActionResult UpdateAccountAsync([FromBody] AccountModel account)
         {
             _accountsRepository.UpdateItemAsync(account);
 

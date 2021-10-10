@@ -12,9 +12,9 @@ namespace KeySecret.DataAccess.Controllers
         private readonly IRepository<CategoryModel> _categoriesRepository;
         private readonly ILogger<CategoriesController> _logger;
 
-        public CategoriesController(IRepository<CategoryModel> accountsRepository, ILogger<CategoriesController> logger)
+        public CategoriesController(IRepository<CategoryModel> categoriesRepository, ILogger<CategoriesController> logger)
         {
-            _categoriesRepository = accountsRepository;
+            _categoriesRepository = categoriesRepository;
             _logger = logger;
         }
 
