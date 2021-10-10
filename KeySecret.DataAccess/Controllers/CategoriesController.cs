@@ -1,87 +1,86 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using KeySecret.DataAccess.Library.Categories.Models;
+using KeySecret.DataAccess.Library.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController : ControllerBase
     {
-        // GET: CategoriesController
-        public ActionResult Index()
+        private readonly IRepository<CategoryModel> _categoriesRepository;
+        private readonly ILogger<CategoriesController> _logger;
+
+        public CategoriesController(IRepository<CategoryModel> accountsRepository, ILogger<CategoriesController> logger)
         {
-            return View();
+            _categoriesRepository = accountsRepository;
+            _logger = logger;
         }
 
-        // GET: CategoriesController/Details/5
-        public ActionResult Details(int id)
+        [HttpGet("/api/categories")]
+        public async Task<ActionResult<IEnumerable<CategoryModel>>> GetAllCategoriesAsync()
         {
-            return View();
-        }
+            IEnumerable<CategoryModel> list = await _categoriesRepository.GetItemsAsync();
 
-        // GET: CategoriesController/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: CategoriesController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
-        {
-            try
+            if (list == null)
             {
-                return RedirectToAction(nameof(Index));
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
+                return NotFound(nameof(GetAllCategoriesAsync) + ": NULL-Object returned");
             }
-            catch
-            {
-                return View();
-            }
+
+            _logger.LogInformation($"Es wurde eine Liste aller Kategorien angefordert. {((List<CategoryModel>)list).Count} Kategorien wurden zurückgegeben.");
+            return Ok(list);
         }
 
-        // GET: CategoriesController/Edit/5
-        public ActionResult Edit(int id)
+        [HttpGet("/api/categories/{id}")]
+        public async Task<ActionResult<CategoryModel>> GetByIdAsync(int id)
         {
-            return View();
+            CategoryModel item = await _categoriesRepository.GetItemAsync(id);
+
+            if (item == null)
+            {
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
+                return NotFound(nameof(GetByIdAsync) + ": NULL-Object returned");
+            }
+
+            _logger.LogInformation($"Die Kategorie mit der ID {id} wurd angefordert.");
+            return Ok(item);
         }
 
-        // POST: CategoriesController/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        [HttpPost("/api/categories/ins")]
+        public async Task<ActionResult<CategoryModel>> InsertCategoryAsync([FromBody] CategoryModel category)
         {
-            try
+            CategoryModel item = await _categoriesRepository.InsertItemAsync(category);
+
+            if (item == null)
             {
-                return RedirectToAction(nameof(Index));
+                _logger.LogError("Fehler bei der Rückgabe. Objekt 'model' ist NULL");
+                return BadRequest(nameof(InsertCategoryAsync) + ": NULL-Object returned");
             }
-            catch
-            {
-                return View();
-            }
+
+            _logger.LogInformation("Es wurde ein Eintrag in die Datenbank geschrieben.");
+            return CreatedAtAction(nameof(InsertCategoryAsync), item);
         }
 
-        // GET: CategoriesController/Delete/5
-        public ActionResult Delete(int id)
+        [HttpPut("/api/categories/upd")]
+        public ActionResult UpdateCategoryAsync([FromBody] CategoryModel category)
         {
-            return View();
+            _categoriesRepository.UpdateItemAsync(category);
+
+            _logger.LogInformation($"Kategorie wurde aktualisiert.");
+
+            return NoContent();
         }
 
-        // POST: CategoriesController/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        [HttpDelete("/api/categories/del/{id}")]
+        public ActionResult DeleteAccountAsync(int id)
         {
-            try
-            {
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+            _categoriesRepository.DeleteItemAsync(id);
+
+            _logger.LogInformation($"Kategorie mit der ID {id} wurde gelöscht.");
+
+            return NoContent();
         }
     }
 }
