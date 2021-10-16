@@ -1,4 +1,4 @@
-﻿using KeySecret.DataAccess.Authentication;
+﻿using KeySecret.DataAccess.Authentication.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

@@ -1,5 +1,6 @@
 ﻿using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
     {

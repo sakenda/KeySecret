@@ -1,10 +1,11 @@
-using KeySecret.DataAccess.Authentication;
+using KeySecret.DataAccess.Authentication.Models;
 using KeySecret.DataAccess.Data;
 using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Accounts.Repositories;
 using KeySecret.DataAccess.Library.Categories.Models;
 using KeySecret.DataAccess.Library.Categories.Repositories;
 using KeySecret.DataAccess.Library.Interfaces;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +16,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace KeySecret.DataAccess
 {
@@ -28,13 +28,12 @@ namespace KeySecret.DataAccess
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            ConnectionString = configuration.GetConnectionString("KeySecretData");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConnectionString = Configuration.GetConnectionString("KeySecretData");
-
             // Authorization
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -56,7 +55,7 @@ namespace KeySecret.DataAccess
                             ValidateAudience = true,
                             ValidAudience = Configuration["JWT:ValidAudience"],
                             ValidIssuer = Configuration["JWT:ValidIssuer"],
-                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                            //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                         };
                     });
 
@@ -102,7 +101,8 @@ namespace KeySecret.DataAccess
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=Home}/{action=Index}/{id?}"
+                );
                 endpoints.MapRazorPages();
             });
         }

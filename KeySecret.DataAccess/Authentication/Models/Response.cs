@@ -1,4 +1,4 @@
-﻿namespace KeySecret.DataAccess.Authentication
+﻿namespace KeySecret.DataAccess.Authentication.Models
 {
     public class Response
     {
