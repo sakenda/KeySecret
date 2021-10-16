@@ -39,6 +39,8 @@ namespace KeySecret.DataAccess.Controllers
         {
             var user = await _userManager.FindByNameAsync(model.Username);
 
+            user.LockoutEnabled = false;
+
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 _logger.LogError("Failed to authenticate. Check your credencials");
@@ -66,15 +68,13 @@ namespace KeySecret.DataAccess.Controllers
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                     );
 
-            _logger.LogInformation("Successful authenticated.");
+            model.Token = new JwtSecurityTokenHandler().WriteToken(token);
+            model.Expires = token.ValidTo;
 
-            return Ok(new
-            {
-                username = model.Username,
-                password = model.Password,
-                token = new JwtSecurityTokenHandler().WriteToken(token),
-                expiration = token.ValidTo
-            });
+            if (model.IsValid())
+                _logger.LogInformation("Successful authenticated.");
+
+            return Ok(model);
         }
 
         [HttpPost]

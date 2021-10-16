@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace KeySecret.DataAccess
 {
@@ -55,7 +56,7 @@ namespace KeySecret.DataAccess
                             ValidateAudience = true,
                             ValidAudience = Configuration["JWT:ValidAudience"],
                             ValidIssuer = Configuration["JWT:ValidIssuer"],
-                            //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
+                            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                         };
                     });
 

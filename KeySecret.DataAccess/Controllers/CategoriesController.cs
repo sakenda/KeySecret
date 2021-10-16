@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace KeySecret.DataAccess.Controllers
 {
     // Toggle Authentification
-    //[Authorize]
+    [Authorize]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
