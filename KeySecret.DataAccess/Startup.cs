@@ -1,4 +1,3 @@
-using KeySecret.DataAccess.Authentication.Models;
 using KeySecret.DataAccess.Data;
 using KeySecret.DataAccess.Library.Accounts.Models;
 using KeySecret.DataAccess.Library.Accounts.Repositories;

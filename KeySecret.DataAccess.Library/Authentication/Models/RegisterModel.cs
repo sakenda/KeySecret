@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace KeySecret.DataAccess.Authentication.Models
+namespace KeySecret.DataAccess.Library.Authentication.Models
 {
     public class RegisterModel
     {

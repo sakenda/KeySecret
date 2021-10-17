@@ -1,5 +1,4 @@
-﻿using KeySecret.DataAccess.Authentication.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace KeySecret.DataAccess.Data
