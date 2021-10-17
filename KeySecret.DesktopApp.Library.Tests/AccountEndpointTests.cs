@@ -1,25 +1,41 @@
-﻿using System;
-using System.Threading.Tasks;
-
-using Moq;
-using Xunit;
-
-using KeySecret.DesktopApp.Library.Accounts.Models;
+﻿using KeySecret.DesktopApp.Library.Accounts.Models;
+using KeySecret.DesktopApp.Library.Authentification.Models;
+using KeySecret.DesktopApp.Library.Helper;
 using KeySecret.DesktopApp.Library.Interfaces;
+using Moq;
 using RichardSzalay.MockHttp;
-using System.Text.Json;
+using System;
 using System.Net.Http;
-using Moq.Protected;
-using System.Threading;
-using System.Net;
-using KeySecret.DesktopApp.Library.DataAccess;
-using FluentAssertions;
+using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace KeySecret.DesktopApp.Library.Tests
 {
     internal class Helper : IApiHelper
     {
         public HttpClient Client { get; set; }
+
+        public AuthenticatedUserModel AuthenticatedUser => throw new NotImplementedException();
+
+        public void AddBearerToken(string token)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void LogOffUser()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Response> Register(string username, string email, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task IApiHelper.Authenticate(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class AccountEndpointTests

@@ -4,7 +4,6 @@
              xmlns:local="clr-namespace:KeySecret.DesktopApp">
 
     <Application.Resources>
-
         <!-- Button Style-->
         <Style TargetType="Button">
             <Setter Property="Background" Value="LightGray"/>

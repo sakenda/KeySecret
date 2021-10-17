@@ -102,7 +102,12 @@ namespace KeySecret.DataAccess.Controllers
             }
 
             _logger.LogInformation("Successful registered a user", user);
-            return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+            var response = new Response()
+            {
+                Status = "Sucess",
+                Message = "User successfully created",
+            };
+            return Ok(response);
         }
     }
 }

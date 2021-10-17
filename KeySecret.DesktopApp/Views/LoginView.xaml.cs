@@ -1,13 +1,8 @@
+using KeySecret.DesktopApp.Library.Authentification.Models;
+using KeySecret.DesktopApp.Library.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace KeySecret.DesktopApp.Views
 {
@@ -16,60 +11,45 @@ namespace KeySecret.DesktopApp.Views
     /// </summary>
     public partial class LoginView : Window
     {
-        /*
-          public event PropertyChangedEventHandler PropertyChanged;
+        private readonly IApiHelper _apiHelper;
+        private readonly IServiceProvider _services;
 
-          private string _loginString;
-          public string LoginString
-          {
-              get => _loginString;
-              set
-              {
-                  _loginString = value;
-                  OnPropertyChanged(nameof(LoginString));
-              }
-          }
-          */
-        public LoginView()
+        public string Username { get; set; } = "admin";
+        public string Password { get; set; } = "Root1207!";
+        public string Email { get; set; }
+
+        public LoginView(IApiHelper apiHelper, IServiceProvider services)
         {
             InitializeComponent();
-            // this.DataContext = this;
+
+            DataContext = this;
+            _apiHelper = apiHelper;
+            _services = services;
         }
 
-        private void UsernameBox_GotFocus(object sender, RoutedEventArgs e)
+        private void pwb_PasswordBox_PasswordChanged(object sender, RoutedEventArgs e) => Password = ((PasswordBox)sender).Password;
+
+        private void Exit_Click(object sender, RoutedEventArgs e) => Close();
+
+        private async void Login_Click(object sender, RoutedEventArgs e)
         {
-            UsernameBox.Foreground = new SolidColorBrush(Colors.Black);
-            if (UsernameBox.Text is "Username")
+            if (string.IsNullOrWhiteSpace(Username) || string.IsNullOrWhiteSpace(Password))
             {
-                UsernameBox.Text = null;
+                // User error output
+                return;
             }
+
+            await _apiHelper.Authenticate(Username, Password);
+
+            var mainWindow = _services.GetService(typeof(MainWindow)) as MainWindow;
+            mainWindow.Show();
+            this.Close();
         }
 
-        private void PasswordBox_GotFocus(object sender, RoutedEventArgs e)
+        private void Register_Click(object sender, RoutedEventArgs e)
         {
-            PasswordBox.Foreground = new SolidColorBrush(Colors.Black);
-            PasswordBox.Clear();
-
-
+            var registerView = _services.GetService(typeof(RegisterView));
+            ((RegisterView)registerView).Show();
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Close();
-        }
-
-        private void Window_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
-        }
-        /*
-protected void OnPropertyChanged(string propertyname) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
-
-private void Button_Click(object sender, RoutedEventArgs e)
-{
-LoginString = "TestString";
-}
-*/
     }
 }
