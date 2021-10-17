@@ -1,4 +1,5 @@
-﻿using KeySecret.DataAccess.Authentication.Models;
+﻿using KeySecret.DataAccess.Data;
+using KeySecret.DataAccess.Library.Authentication.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -37,16 +38,78 @@ namespace KeySecret.DataAccess.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromForm] LoginModel model)
         {
+            var response = new Response();
             var user = await _userManager.FindByNameAsync(model.Username);
-
-            user.LockoutEnabled = false;
 
             if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
-                _logger.LogError("Failed to authenticate. Check your credencials");
-                return Unauthorized();
+                response.Status = "401 Unauthorized";
+                response.Message = "Failed to authenticate. Check your credencials";
+
+                _logger.LogError(response.Status + ": " + response.Message);
+                return Unauthorized(response);
             }
 
+            await GetUserCredencials(model, user);
+
+            if (!model.IsValid())
+            {
+                response.Status = "401 Unauthorized";
+                response.Message = "The stored data is not valid. Please";
+
+                _logger.LogInformation(response.Status + ": " + response.Message);
+                return Unauthorized(response);
+            }
+
+            response.Status = "200 OK";
+            response.Message = "Successful authenticated.";
+
+            _logger.LogInformation(response.Status + ": " + response.Message);
+            return Ok(model);
+        }
+
+        [HttpPost]
+        [Route("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
+        {
+            var response = new Response();
+
+            var userExists = await _userManager.FindByNameAsync(model.Username);
+            if (userExists != null)
+            {
+                response.Status = "500 Internal Server Error";
+                response.Message = "User already exists";
+
+                _logger.LogError(response.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+
+            ApplicationUser user = new ApplicationUser()
+            {
+                Email = model.Email,
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName = model.Username
+            };
+
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                response.Status = "500 Internal Server Error";
+                response.Message = "User creation failed! Please check user details and try again.";
+
+                _logger.LogError(response.ToString());
+                return StatusCode(StatusCodes.Status500InternalServerError, response);
+            }
+
+            response.Status = "200 OK";
+            response.Message = "User successfully created";
+
+            _logger.LogInformation(response.ToString());
+            return Ok(response);
+        }
+
+        private async Task GetUserCredencials(LoginModel model, ApplicationUser user)
+        {
             var userRoles = await _userManager.GetRolesAsync(user);
             var authClaims = new List<Claim>
             {
@@ -70,44 +133,6 @@ namespace KeySecret.DataAccess.Controllers
 
             model.Token = new JwtSecurityTokenHandler().WriteToken(token);
             model.Expires = token.ValidTo;
-
-            if (model.IsValid())
-                _logger.LogInformation("Successful authenticated.");
-
-            return Ok(model);
-        }
-
-        [HttpPost]
-        [Route("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterModel model)
-        {
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
-            {
-                _logger.LogError("Failed register: User already exist.");
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
-            }
-
-            ApplicationUser user = new ApplicationUser()
-            {
-                Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
-            };
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                _logger.LogError("User creation failed!");
-                return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
-            }
-
-            _logger.LogInformation("Successful registered a user", user);
-            var response = new Response()
-            {
-                Status = "Sucess",
-                Message = "User successfully created",
-            };
-            return Ok(response);
         }
     }
 }
