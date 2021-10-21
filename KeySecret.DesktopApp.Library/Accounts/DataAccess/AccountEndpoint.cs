@@ -28,9 +28,17 @@ namespace KeySecret.DesktopApp.Library.DataAccess
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<IEnumerable<AccountModel>>();
+                var result = await response.Content.ReadAsAsync<IEnumerable<EndpointAccountModel>>();
+                var resultList = new List<AccountModel>();
 
-                return result;
+                foreach (var a in result)
+                {
+                    var account = new AccountModel(a.Name, a.WebAdress, a.Password, a.CreatedDate);
+                    account.SetId(a.Id);
+                    resultList.Add(account);
+                }
+
+                return resultList;
             }
         }
 
@@ -45,9 +53,11 @@ namespace KeySecret.DesktopApp.Library.DataAccess
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<AccountModel>();
+                var result = await response.Content.ReadAsAsync<EndpointAccountModel>();
+                var account = new AccountModel(result.Name, result.WebAdress, result.Password, result.CreatedDate);
+                account.SetId(result.Id);
 
-                return result;
+                return account;
             }
         }
 
@@ -58,12 +68,19 @@ namespace KeySecret.DesktopApp.Library.DataAccess
         /// <returns></returns>
         public async Task<AccountModel> InsertAsync(AccountModel item)
         {
+            if (item.Id != -1)
+                throw new ArgumentException("Id darf nicht größer als -1 sein");
+
             using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/accounts/ins", item))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                return await response.Content.ReadAsAsync<AccountModel>();
+                var result = await response.Content.ReadAsAsync<AccountModel>();
+                var account = new AccountModel(result.Name, result.WebAdress, result.Password, result.CreatedDate);
+                account.SetId(result.Id);
+
+                return account;
             }
         }
 
