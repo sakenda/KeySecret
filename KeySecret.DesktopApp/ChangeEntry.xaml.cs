@@ -1,20 +1,7 @@
-﻿using KeySecret.DesktopApp.Library.Accounts.Models;
-using KeySecret.DesktopApp.Library.DataAccess;
-using KeySecret.DesktopApp.Library.Interfaces;
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using KeySecret.DesktopApp.Library;
+using KeySecret.DesktopApp.Library.Models;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace KeySecret.DesktopApp
 {

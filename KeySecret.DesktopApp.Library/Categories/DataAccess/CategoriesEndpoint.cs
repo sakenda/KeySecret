@@ -1,6 +1,5 @@
-﻿using KeySecret.DesktopApp.Library.Categories.Models;
-using KeySecret.DesktopApp.Library.Interfaces;
-
+﻿using KeySecret.DesktopApp.Library.Models;
+using KeySecret.DesktopApp.Library.Helper;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

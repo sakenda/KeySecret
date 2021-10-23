@@ -1,5 +1,6 @@
 ﻿using KeySecret.DataAccess.Data;
-using KeySecret.DataAccess.Library.Authentication.Models;
+using KeySecret.DataAccess.Library.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ using System.Threading.Tasks;
 namespace KeySecret.DataAccess.Controllers
 {
     [Route("api/[controller]")]
+    [AllowAnonymous]
     [ApiController]
     public class AuthenticateController : ControllerBase
     {

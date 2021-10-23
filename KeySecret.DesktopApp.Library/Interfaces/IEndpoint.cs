@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace KeySecret.DesktopApp.Library.Interfaces
+namespace KeySecret.DesktopApp.Library
 {
     public interface IEndpoint<T>
     {

@@ -1,9 +1,7 @@
 using KeySecret.DataAccess.Data;
-using KeySecret.DataAccess.Library.Accounts.Models;
-using KeySecret.DataAccess.Library.Accounts.Repositories;
-using KeySecret.DataAccess.Library.Categories.Models;
-using KeySecret.DataAccess.Library.Categories.Repositories;
-using KeySecret.DataAccess.Library.Interfaces;
+using KeySecret.DataAccess.Library.Models;
+using KeySecret.DataAccess.Library.Repositories;
+using KeySecret.DataAccess.Library;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -64,8 +62,10 @@ namespace KeySecret.DataAccess
                     .AddDatabaseDeveloperPageExceptionFilter();
 
             // Singletons
-            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(repository => new AccountsRepository(ConnectionString, LoggerFactory.CreateLogger<AccountsRepository>()))
-                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(repository => new CategoryRepository(ConnectionString, LoggerFactory.CreateLogger<CategoryRepository>()));
+            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(
+                        repository => new AccountsRepository(ConnectionString, LoggerFactory.CreateLogger<AccountsRepository>()))
+                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(
+                        repository => new CategoryRepository(ConnectionString, LoggerFactory.CreateLogger<CategoryRepository>()));
 
             // Controllers
             services.AddControllersWithViews();

@@ -1,6 +1,5 @@
-﻿using KeySecret.DesktopApp.Library.Accounts.Models;
-using KeySecret.DesktopApp.Library.Categories.Models;
-using KeySecret.DesktopApp.Library.Interfaces;
+﻿using KeySecret.DesktopApp.Library.Models;
+using KeySecret.DesktopApp.Library;
 
 using System;
 using System.Collections.ObjectModel;
@@ -12,15 +11,12 @@ namespace KeySecret.DesktopApp
 {
     public partial class MainWindow : Window
     {
-        public static string _categorie { get; set; }
-
-        public static ObservableCollection<AccountModel> AccountsList { get; set; }
-        public static ObservableCollection<CategoryModel> CategoryList { get; set; }
-
-
         private readonly IEndpoint<AccountModel> _accountEndpoint;
 
         private readonly IEndpoint<CategoryModel> _categoryEndpoint;
+
+        public static ObservableCollection<AccountModel> AccountsList { get; set; }
+        public static ObservableCollection<CategoryModel> CategoryList { get; set; }
 
         public MainWindow(IEndpoint<AccountModel> accountEndpoint, IEndpoint<CategoryModel> categoryEndpoint)
         {
@@ -33,7 +29,7 @@ namespace KeySecret.DesktopApp
             CategoryList = new ObservableCollection<CategoryModel>();
 
             lb_Accounts.ItemsSource = AccountsList;
-            Categorie_Area.ItemsSource = CategoryList;
+            lb_Categories.ItemsSource = CategoryList;
         }
 
         protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e) => this.DragMove();
@@ -48,7 +44,7 @@ namespace KeySecret.DesktopApp
         {
             AddDialog _dialogBox = new AddDialog();
             _dialogBox.ShowDialog();
-            Categorie_Area.Items.Add(_categorie);
+            lb_Categories.Items.Add(CategoryList);
         }
 
         private void Remove(object sender, RoutedEventArgs e)
@@ -124,6 +120,5 @@ namespace KeySecret.DesktopApp
                 CategoryList.Add(item);
             }
         }
-
     }
 }

@@ -1,4 +1,4 @@
-﻿using KeySecret.DesktopApp.Library.Interfaces;
+﻿using KeySecret.DesktopApp.Library.DataAccess;
 using System.Windows;
 
 namespace KeySecret.DesktopApp.Views
@@ -8,19 +8,19 @@ namespace KeySecret.DesktopApp.Views
     /// </summary>
     public partial class RegisterView : Window
     {
-        private IApiHelper _apiHelper { get; }
+        private IAuthenticateEndpoint _authenticateEndpoint { get; }
 
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public bool IsErrorVisible { get; set; }
 
-        public RegisterView(IApiHelper apiHelper)
+        public RegisterView(IAuthenticateEndpoint authenticateEndpoint)
         {
             InitializeComponent();
 
             DataContext = this;
-            _apiHelper = apiHelper;
+            _authenticateEndpoint = authenticateEndpoint;
         }
 
         private void btn_Cancel_Click(object sender, RoutedEventArgs e) => this.Close();
@@ -36,7 +36,7 @@ namespace KeySecret.DesktopApp.Views
                 return;
             }
 
-            var response = await _apiHelper.Register(Username, Email, Password);
+            var response = await _authenticateEndpoint.Register(Username, Email, Password);
             IsErrorVisible = true;
             ErrorMessage.Text = $"{response.Status}: {response.Message}";
         }

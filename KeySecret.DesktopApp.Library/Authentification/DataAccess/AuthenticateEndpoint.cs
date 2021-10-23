@@ -1,10 +1,11 @@
-﻿using KeySecret.DesktopApp.Library.Authentification.Models;
-using KeySecret.DesktopApp.Library.Interfaces;
+﻿using KeySecret.DesktopApp.Library.Models;
+using KeySecret.DesktopApp.Library.Helper;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace KeySecret.DesktopApp.Library.Authentification.DataAccess
+namespace KeySecret.DesktopApp.Library.DataAccess
 {
     public class AuthenticateEndpoint : IAuthenticateEndpoint
     {
@@ -15,18 +16,44 @@ namespace KeySecret.DesktopApp.Library.Authentification.DataAccess
             _apiHelper = apiHelper;
         }
 
-        public async Task<IAuthenticatedUserModel> Login(string username, string password)
+        public async Task<Response> Register(string username, string email, string password)
         {
-            var data = new { Username = username, Password = password };
+            var user = new RegisterUserModel()
+            {
+                Username = username,
+                Email = email,
+                Password = password
+            };
 
-            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("/api/Authenticate/login/", data))
+            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("/api/Authenticate/register/", user))
+            {
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception(response.ReasonPhrase);
+                }
+
+                var apiResponse = await response.Content.ReadAsAsync<Response>();
+                return apiResponse;
+            }
+        }
+
+        public async Task Authenticate(string username, string password)
+        {
+            var data = new FormUrlEncodedContent(new[]
+            {
+                new KeyValuePair<string, string>("grant_type", "password"),
+                new KeyValuePair<string, string>("username", username),
+                new KeyValuePair<string, string>("password", password)
+            });
+
+            using (HttpResponseMessage response = await _apiHelper.Client.PostAsync("/api/Authenticate/login/", data))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<AuthenticatedUserModel>();
+                var result = await response.Content.ReadAsAsync<CurrentUser>();
+                _apiHelper.SetCurrentUser(result);
                 _apiHelper.AddBearerToken(result.Token);
-                return result;
             }
         }
     }

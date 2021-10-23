@@ -2,7 +2,7 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace KeySecret.DesktopApp.Library.Accounts.Models
+namespace KeySecret.DesktopApp.Library.Models
 {
     public class AccountModel
     {
@@ -53,6 +53,7 @@ namespace KeySecret.DesktopApp.Library.Accounts.Models
             set { _createdDate = value; }
         }
         public bool IsDirty { get; private set; }
+        public bool isDeleted { get; set; }
 
         public AccountModel()
         {

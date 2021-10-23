@@ -1,5 +1,5 @@
-﻿using KeySecret.DataAccess.Library.Accounts.Models;
-using KeySecret.DataAccess.Library.Interfaces;
+﻿using KeySecret.DataAccess.Library.Models;
+using KeySecret.DataAccess.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;

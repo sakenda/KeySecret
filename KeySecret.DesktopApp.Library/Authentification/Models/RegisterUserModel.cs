@@ -1,6 +1,6 @@
-﻿namespace KeySecret.DesktopApp.Library.Authentification.Models
+﻿namespace KeySecret.DesktopApp.Library.Models
 {
-    public class RegisterModel
+    public class RegisterUserModel
     {
         public string Username { get; set; }
         public string Email { get; set; }

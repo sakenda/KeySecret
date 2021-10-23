@@ -1,4 +1,4 @@
-﻿namespace KeySecret.DataAccess.Library.Categories.Models
+﻿namespace KeySecret.DataAccess.Library.Models
 {
     public class CategoryModel
     {

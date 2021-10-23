@@ -1,30 +1,26 @@
-using KeySecret.DesktopApp.Library.Authentification.Models;
-using KeySecret.DesktopApp.Library.Interfaces;
+using KeySecret.DesktopApp.Library.DataAccess;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
 namespace KeySecret.DesktopApp.Views
 {
-    /// <summary>
-    /// Interaction logic for LoginView.xaml
-    /// </summary>
     public partial class LoginView : Window
     {
-        private readonly IApiHelper _apiHelper;
         private readonly IServiceProvider _services;
+        private readonly IAuthenticateEndpoint _authenticateEndpoint;
 
         public string Username { get; set; } = "admin";
         public string Password { get; set; } = "Root1207!";
         public string Email { get; set; }
 
-        public LoginView(IApiHelper apiHelper, IServiceProvider services)
+        public LoginView(IServiceProvider services, IAuthenticateEndpoint authenticateEndpoint)
         {
             InitializeComponent();
 
             DataContext = this;
-            _apiHelper = apiHelper;
             _services = services;
+            _authenticateEndpoint = authenticateEndpoint;
         }
 
         private void pwb_PasswordBox_PasswordChanged(object sender, RoutedEventArgs e) => Password = ((PasswordBox)sender).Password;
@@ -39,7 +35,7 @@ namespace KeySecret.DesktopApp.Views
                 return;
             }
 
-            await _apiHelper.Authenticate(Username, Password);
+            await _authenticateEndpoint.Authenticate(Username, Password);
 
             var mainWindow = _services.GetService(typeof(MainWindow)) as MainWindow;
             mainWindow.Show();

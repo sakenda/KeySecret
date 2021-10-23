@@ -1,11 +1,7 @@
-﻿using KeySecret.DesktopApp.Library.Accounts.Models;
-using KeySecret.DesktopApp.Library.Authentification;
-using KeySecret.DesktopApp.Library.Authentification.DataAccess;
-using KeySecret.DesktopApp.Library.Authentification.Models;
-using KeySecret.DesktopApp.Library.Categories.Models;
+﻿using KeySecret.DesktopApp.Library.Models;
 using KeySecret.DesktopApp.Library.DataAccess;
 using KeySecret.DesktopApp.Library.Helper;
-using KeySecret.DesktopApp.Library.Interfaces;
+using KeySecret.DesktopApp.Library;
 using KeySecret.DesktopApp.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -38,7 +34,7 @@ namespace KeySecret.DesktopApp
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IApiHelper, ApiHelper>()
-                    .AddSingleton<IAuthenticatedUserModel, AuthenticatedUserModel>()
+                    .AddSingleton<ICurrentUser, CurrentUser>()
                     .AddSingleton<IAuthenticateEndpoint, AuthenticateEndpoint>()
                     .AddSingleton<IEndpoint<AccountModel>, AccountEndpoint>()
                     .AddSingleton<IEndpoint<CategoryModel>, CategoriesEndpoint>();

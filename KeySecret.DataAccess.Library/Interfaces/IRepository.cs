@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace KeySecret.DataAccess.Library.Interfaces
+namespace KeySecret.DataAccess.Library
 {
     public interface IRepository<T>
     {

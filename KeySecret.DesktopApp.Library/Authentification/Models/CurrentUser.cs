@@ -1,15 +1,15 @@
 ﻿using System;
 
-namespace KeySecret.DesktopApp.Library.Authentification.Models
+namespace KeySecret.DesktopApp.Library.Models
 {
-    public class AuthenticatedUserModel : IAuthenticatedUserModel
+    public class CurrentUser : ICurrentUser
     {
         public string Token { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }
         public DateTime Expiration { get; set; }
 
-        public void ResetAuthenticatedUser()
+        public void ResetCurrentUser()
         {
             Token = string.Empty;
             Username = string.Empty;

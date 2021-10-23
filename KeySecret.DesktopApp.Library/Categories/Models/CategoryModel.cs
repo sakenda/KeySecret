@@ -1,4 +1,4 @@
-﻿namespace KeySecret.DesktopApp.Library.Categories.Models
+﻿namespace KeySecret.DesktopApp.Library.Models
 {
     public class CategoryModel
     {

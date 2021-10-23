@@ -1,6 +1,4 @@
-﻿using KeySecret.DataAccess.Library.Categories.Models;
-using KeySecret.DataAccess.Library.Helper;
-using KeySecret.DataAccess.Library.Interfaces;
+﻿using KeySecret.DataAccess.Library.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -8,12 +6,12 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Threading.Tasks;
 
-namespace KeySecret.DataAccess.Library.Categories.Repositories
+namespace KeySecret.DataAccess.Library.Repositories
 {
     public class CategoryRepository : IRepository<CategoryModel>
     {
         private readonly string _connectionString;
-        private readonly ILogger<CategoryRepository> _logger;
+        private ILogger _logger;
 
         private const string _spGetOne = "KeySecretDB.dbo.spCategories_GetOneItem";
         private const string _spGetAll = "KeySecretDB.dbo.spCategories_GetAllItems";
@@ -21,7 +19,7 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         private const string _spUpdate = "KeySecretDB.dbo.spCategories_UpdateItem";
         private const string _spDelete = "KeySecretDB.dbo.spCategories_DeleteItem";
 
-        public CategoryRepository(string connectionString, ILogger<CategoryRepository> logger)
+        public CategoryRepository(string connectionString, ILogger logger)
         {
             _connectionString = connectionString;
             _logger = logger;
@@ -34,6 +32,8 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         /// <returns></returns>
         public async Task<CategoryModel> GetItemAsync(int id)
         {
+            var loggerCtx = new LoggerContext(_logger);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -60,10 +60,16 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                     }
 
                     await transaction.CommitAsync();
+
+                    loggerCtx.Level = LogLevel.Information;
+                    loggerCtx.Message = $"Successful retrieved item. ID: {model.Id}";
+                    loggerCtx.WriteLog();
                 }
                 catch (Exception ex)
                 {
-                    throw await TransactionRollbackAsync(transaction, ex, nameof(GetItemAsync));
+                    Exception exception = await transaction.TransactionRollbackAsync(ex);
+                    loggerCtx.WriteException(exception);
+                    throw exception;
                 }
 
                 return model;
@@ -76,6 +82,8 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         /// <returns></returns>
         public async Task<IEnumerable<CategoryModel>> GetItemsAsync()
         {
+            var loggerCtx = new LoggerContext(_logger);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -101,10 +109,16 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                     }
 
                     await transaction.CommitAsync();
+
+                    loggerCtx.Level = LogLevel.Information;
+                    loggerCtx.Message = $"{list.Count} items successfully retrieved.";
+                    loggerCtx.WriteLog();
                 }
                 catch (Exception ex)
                 {
-                    throw await TransactionRollbackAsync(transaction, ex, nameof(GetItemsAsync));
+                    Exception exception = await transaction.TransactionRollbackAsync(ex);
+                    loggerCtx.WriteException(exception);
+                    throw exception;
                 }
 
                 return list;
@@ -118,6 +132,8 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         /// <returns></returns>
         public async Task<CategoryModel> InsertItemAsync(CategoryModel item)
         {
+            var loggerCtx = new LoggerContext(_logger);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -137,10 +153,16 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                     command = new SqlCommand("select @@IDENTITY", connection, transaction);
 
                     item.Id = Convert.ToInt32(await command.ExecuteScalarAsync());
+
+                    loggerCtx.Level = LogLevel.Information;
+                    loggerCtx.Message = $"Item successfullyinserted.";
+                    loggerCtx.WriteLog();
                 }
                 catch (Exception ex)
                 {
-                    throw await TransactionRollbackAsync(transaction, ex, nameof(InsertItemAsync));
+                    Exception exception = await transaction.TransactionRollbackAsync(ex);
+                    loggerCtx.WriteException(exception);
+                    throw exception;
                 }
 
                 return item;
@@ -154,6 +176,8 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         /// <returns></returns>
         public async Task UpdateItemAsync(CategoryModel item)
         {
+            var loggerCtx = new LoggerContext(_logger);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -169,10 +193,16 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                 {
                     await command.ExecuteNonQueryAsync();
                     await transaction.CommitAsync();
+
+                    loggerCtx.Level = LogLevel.Information;
+                    loggerCtx.Message = $"Item successfully updated.";
+                    loggerCtx.WriteLog();
                 }
                 catch (Exception ex)
                 {
-                    throw await TransactionRollbackAsync(transaction, ex, nameof(UpdateItemAsync));
+                    Exception exception = await transaction.TransactionRollbackAsync(ex);
+                    loggerCtx.WriteException(exception);
+                    throw exception;
                 }
             }
         }
@@ -184,6 +214,8 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
         /// <returns></returns>
         public async Task DeleteItemAsync(int id)
         {
+            var loggerCtx = new LoggerContext(_logger);
+
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -198,47 +230,18 @@ namespace KeySecret.DataAccess.Library.Categories.Repositories
                 {
                     await command.ExecuteNonQueryAsync();
                     await transaction.CommitAsync();
+
+                    loggerCtx.Level = LogLevel.Information;
+                    loggerCtx.Message = $"Item successfully deleted. Id: {id}";
+                    loggerCtx.WriteLog();
                 }
                 catch (Exception ex)
                 {
-                    throw await TransactionRollbackAsync(transaction, ex, nameof(DeleteItemAsync));
+                    Exception exception = await transaction.TransactionRollbackAsync(ex);
+                    loggerCtx.WriteException(exception);
+                    throw exception;
                 }
             }
-        }
-
-        /// <summary>
-        /// Tries a Rollback. If it fails, the method will return a Exception
-        /// </summary>
-        /// <param name="transaction"></param>
-        /// <param name="ex"></param>
-        /// <param name="origin"></param>
-        /// <returns></returns>
-        private async Task<Exception> TransactionRollbackAsync(SqlTransaction transaction, Exception ex, string origin)
-        {
-            try
-            {
-                await transaction.RollbackAsync();
-            }
-            catch (Exception ex2)
-            {
-                _logger.LogError($"Fehler beim abrufen in {origin}, Rollback fehlgeschlagen.");
-
-                return new Exception(
-                    "\r\n\r\n" +
-                    $"Caller:\t{origin}\r\n" +
-                    $"Message:\t{ex2.Message}\r\n\r\n" +
-                    ex2.StackTrace
-                );
-            }
-
-            _logger.LogError($"Fehler beim abrufen in {origin}, Rollback erfolgreich.");
-
-            return new Exception(
-                    "\r\n\r\n" +
-                    $"Caller:\t{origin}\r\n" +
-                    $"Message:\t{ex.Message}\r\n\r\n" +
-                    ex.StackTrace
-                );
         }
     }
 }

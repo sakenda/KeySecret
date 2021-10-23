@@ -1,5 +1,5 @@
-﻿using KeySecret.DesktopApp.Library.Accounts.Models;
-using KeySecret.DesktopApp.Library.Interfaces;
+﻿using KeySecret.DesktopApp.Library;
+using KeySecret.DesktopApp.Library.Models;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;

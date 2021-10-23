@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:KeySecret.DesktopApp"
         mc:Ignorable="d"
         Title="KeySecret"
-        Height="450"
-        Width="800"
+        Height="700"
+        Width="1000"
         WindowStartupLocation="CenterScreen"
         Style="{StaticResource {x:Type Window}}"
         Loaded="Window_Loaded">
@@ -28,7 +28,14 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <!-- Categorie Area-->
-            <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="Categorie_Area">
+            <ListBox MinWidth="80" Margin="10" Grid.RowSpan="2" Name="lb_Categories">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" Width="100"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
             </ListBox>
 
             <!-- Data Area-->
@@ -56,7 +63,7 @@
             <StackPanel Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" Orientation="Horizontal">
                 <Button Content="New Pw" Click="NewPw_Click"/>
                 <Button Content="Change Pw" Click="Change_Entry"/>
-                <Button Content="Remove" Click="Remove_Entry" />
+                <Button Content="Remove" Click="Remove_Entry"/>
                 <Button Content="Refresh" Click="Window_Loaded"/>
                 <Button Content="TEST" Click="TestUpdateAccount_OnClick"/>
             </StackPanel>
