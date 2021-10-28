@@ -1,8 +1,7 @@
-using KeySecret.DataAccess.Library.Models;
+using KeySecret.App.Library.Models;
 using KeySecret.App.Library.DataAccess;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 
 namespace KeySecret.App.Web.Pages.Authentication

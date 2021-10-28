@@ -5,8 +5,7 @@ using Xunit;
 using Moq;
 using FluentAssertions;
 using KeySecret.DataAccess.Controllers;
-using KeySecret.DataAccess.Library.Accounts.Models;
-using KeySecret.DataAccess.Library.Interfaces;
+using KeySecret.DataAccess.Library.Models;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
