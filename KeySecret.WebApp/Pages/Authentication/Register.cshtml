@@ -1,0 +1,13 @@
+﻿@page
+@model KeySecret.App.Web.Pages.Authentication.RegisterPageModel
+@{
+}
+
+<h1>Register</h1>
+<form method="post">
+    <input type="text" asp-for="RegisterCredencials.Username" placeholder="Username" /><br/>
+    <input type="text" asp-for="RegisterCredencials.Email" placeholder="Email" /><br/>
+    <input type="text" asp-for="RegisterCredencials.Password" placeholder="Password" /><br/>
+    <button type="submit">Login</button>
+    <label for="UserMessage"/>
+</form>

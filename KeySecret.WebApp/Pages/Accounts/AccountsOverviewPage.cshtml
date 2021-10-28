@@ -1,0 +1,22 @@
+﻿@page
+@model KeySecret.App.Web.Pages.Accounts.AccountsOverviewPageModel
+@{
+}
+
+<h1>Accounts Overview</h1>
+<table>
+    @foreach (var account in Model.MainVM.AccountsList)
+    {
+        <tr>
+            <td width="200">
+                @Html.DisplayFor(accountModel => account.Name)
+            </td>
+            <td width="400">
+                @Html.DisplayFor(accountModel => account.WebAdress)
+            </td>
+            <td width="400">
+                @Html.DisplayFor(accountModel => account.Password)
+            </td>
+        </tr>
+    }
+</table>
