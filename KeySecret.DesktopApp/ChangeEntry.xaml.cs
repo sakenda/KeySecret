@@ -1,9 +1,9 @@
-﻿using KeySecret.DesktopApp.Library;
-using KeySecret.DesktopApp.Library.Models;
+﻿using KeySecret.App.Library;
+using KeySecret.App.Library.Models;
 using System.Windows;
 using System.Windows.Media;
 
-namespace KeySecret.DesktopApp
+namespace KeySecret.App.Desktop
 {
     /// <summary>
     /// Interaction logic for ChangeEntry.xaml

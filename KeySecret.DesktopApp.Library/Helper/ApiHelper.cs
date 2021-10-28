@@ -1,11 +1,10 @@
-﻿using KeySecret.DesktopApp.Library.Models;
-using KeySecret.DesktopApp.Library.Helper;
+﻿using KeySecret.App.Library.Models;
 using System;
 using System.Configuration;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace KeySecret.DesktopApp.Library.Helper
+namespace KeySecret.App.Library.Helper
 {
     public class ApiHelper : IApiHelper
     {
@@ -13,7 +12,7 @@ namespace KeySecret.DesktopApp.Library.Helper
         private CurrentUser _currentUser;
 
         public HttpClient Client => _client;
-        public CurrentUser LoggedInUser => _currentUser;
+        public CurrentUser LoggedInUser => _currentUser == null ? new CurrentUser() { Username = "Guest" } : _currentUser;
 
         public ApiHelper()
         {

@@ -1,8 +1,8 @@
-﻿using KeySecret.DesktopApp.Library.DataAccess;
+﻿using KeySecret.App.Library.DataAccess;
 using System;
 using System.Runtime.CompilerServices;
 
-namespace KeySecret.DesktopApp.Library.Models
+namespace KeySecret.App.Library.Models
 {
     public class AccountModel
     {

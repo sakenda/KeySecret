@@ -1,11 +1,11 @@
-﻿using KeySecret.DesktopApp.Library.Models;
-using KeySecret.DesktopApp.Library.Helper;
+﻿using KeySecret.App.Library.Models;
+using KeySecret.App.Library.Helper;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace KeySecret.DesktopApp.Library.DataAccess
+namespace KeySecret.App.Library.DataAccess
 {
     public class AuthenticateEndpoint : IAuthenticateEndpoint
     {
@@ -18,7 +18,7 @@ namespace KeySecret.DesktopApp.Library.DataAccess
 
         public async Task<Response> Register(string username, string email, string password)
         {
-            var user = new RegisterUserModel()
+            var user = new RegisterModel()
             {
                 Username = username,
                 Email = email,

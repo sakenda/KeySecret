@@ -1,11 +1,11 @@
-﻿using KeySecret.DesktopApp.Library.Helper;
-using KeySecret.DesktopApp.Library.Models;
+﻿using KeySecret.App.Library.Helper;
+using KeySecret.App.Library.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace KeySecret.DesktopApp.Library.DataAccess
+namespace KeySecret.App.Library.DataAccess
 {
     public class AccountEndpoint : IEndpoint<AccountModel>
     {

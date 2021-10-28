@@ -1,7 +1,7 @@
-﻿using KeySecret.DesktopApp.Library.DataAccess;
+﻿using KeySecret.App.Library.DataAccess;
 using System.Windows;
 
-namespace KeySecret.DesktopApp.Views
+namespace KeySecret.App.Desktop.Views
 {
     /// <summary>
     /// Interaction logic for RegisterView.xaml

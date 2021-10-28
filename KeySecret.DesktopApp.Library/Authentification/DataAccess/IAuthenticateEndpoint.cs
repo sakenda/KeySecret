@@ -1,7 +1,7 @@
-﻿using KeySecret.DesktopApp.Library.Helper;
+﻿using KeySecret.App.Library.Helper;
 using System.Threading.Tasks;
 
-namespace KeySecret.DesktopApp.Library.DataAccess
+namespace KeySecret.App.Library.DataAccess
 {
     public interface IAuthenticateEndpoint
     {

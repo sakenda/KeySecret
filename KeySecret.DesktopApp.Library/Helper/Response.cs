@@ -1,4 +1,4 @@
-﻿namespace KeySecret.DesktopApp.Library.Helper
+﻿namespace KeySecret.App.Library.Helper
 {
     public class Response
     {

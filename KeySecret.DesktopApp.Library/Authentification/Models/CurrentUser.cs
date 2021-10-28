@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace KeySecret.DesktopApp.Library.Models
+namespace KeySecret.App.Library.Models
 {
     public class CurrentUser : ICurrentUser
     {

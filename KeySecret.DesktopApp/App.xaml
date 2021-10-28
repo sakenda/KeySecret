@@ -1,7 +1,7 @@
-﻿<Application x:Class="KeySecret.DesktopApp.App"
+﻿<Application x:Class="KeySecret.App.Desktop.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:KeySecret.DesktopApp">
+             xmlns:local="clr-namespace:KeySecret.App.Desktop">
 
     <Application.Resources>
         <!-- Button Style-->

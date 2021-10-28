@@ -1,15 +1,15 @@
-﻿using KeySecret.DesktopApp.Library.Models;
-using KeySecret.DesktopApp.Library.DataAccess;
-using KeySecret.DesktopApp.Library.Helper;
-using KeySecret.DesktopApp.Library;
-using KeySecret.DesktopApp.Views;
+﻿using KeySecret.App.Library.Models;
+using KeySecret.App.Library.DataAccess;
+using KeySecret.App.Library.Helper;
+using KeySecret.App.Library;
+using KeySecret.App.Desktop.Views;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 using System;
 using System.Windows;
 
-namespace KeySecret.DesktopApp
+namespace KeySecret.App.Desktop
 {
     public partial class App : Application
     {

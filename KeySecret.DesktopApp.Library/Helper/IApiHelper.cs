@@ -1,7 +1,7 @@
-﻿using KeySecret.DesktopApp.Library.Models;
+﻿using KeySecret.App.Library.Models;
 using System.Net.Http;
 
-namespace KeySecret.DesktopApp.Library.Helper
+namespace KeySecret.App.Library.Helper
 {
     public interface IApiHelper
     {

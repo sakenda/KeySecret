@@ -1,9 +1,9 @@
-using KeySecret.DesktopApp.Library.DataAccess;
+using KeySecret.App.Library.DataAccess;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace KeySecret.DesktopApp.Views
+namespace KeySecret.App.Desktop.Views
 {
     public partial class LoginView : Window
     {

@@ -1,13 +1,12 @@
-﻿using KeySecret.DesktopApp.Library.Models;
-using KeySecret.DesktopApp.Library;
-
+﻿using KeySecret.App.Library.Models;
+using KeySecret.App.Library;
 using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-namespace KeySecret.DesktopApp
+namespace KeySecret.App.Desktop
 {
     public partial class MainWindow : Window
     {
