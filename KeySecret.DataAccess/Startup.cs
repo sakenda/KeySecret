@@ -32,11 +32,16 @@ namespace KeySecret.DataAccess
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Authorization
+            // Database provider
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
+                    .AddDatabaseDeveloperPageExceptionFilter();
+
+            // Identity provider
             services.AddIdentity<ApplicationUser, IdentityRole>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();
 
+            // Token provider
             services.AddAuthentication(options =>
                     {
                         options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -56,10 +61,6 @@ namespace KeySecret.DataAccess
                             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
                         };
                     });
-
-            // Database
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
-                    .AddDatabaseDeveloperPageExceptionFilter();
 
             // Singletons
             services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(

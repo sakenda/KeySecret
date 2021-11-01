@@ -76,8 +76,8 @@ namespace KeySecret.DataAccess.Controllers
         {
             var response = new Response();
 
-            var userExists = await _userManager.FindByNameAsync(model.Username);
-            if (userExists != null)
+            var resultFind = await _userManager.FindByNameAsync(model.Username);
+            if (resultFind != null)
             {
                 response.Status = "500 Internal Server Error";
                 response.Message = "User already exists";
@@ -88,13 +88,13 @@ namespace KeySecret.DataAccess.Controllers
 
             ApplicationUser user = new ApplicationUser()
             {
+                UserName = model.Username,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString(),
-                UserName = model.Username
+                SecurityStamp = Guid.NewGuid().ToString()
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
+            var resultCreate = await _userManager.CreateAsync(user, model.Password);
+            if (!resultCreate.Succeeded)
             {
                 response.Status = "500 Internal Server Error";
                 response.Message = "User creation failed! Please check user details and try again.";
@@ -105,8 +105,8 @@ namespace KeySecret.DataAccess.Controllers
 
             response.Status = "200 OK";
             response.Message = "User successfully created";
-
             _logger.LogInformation(response.ToString());
+
             return Ok(response);
         }
 
@@ -124,6 +124,7 @@ namespace KeySecret.DataAccess.Controllers
                 authClaims.Add(new Claim(ClaimTypes.Role, userRole));
             }
 
+            // Get JWT-Bearer-Token
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]));
             var token = new JwtSecurityToken(
                     issuer: _configuration["JWT:ValidIssuer"],
