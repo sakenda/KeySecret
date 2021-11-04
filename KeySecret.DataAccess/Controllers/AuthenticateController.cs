@@ -38,7 +38,7 @@ namespace KeySecret.DataAccess.Controllers
 
         [HttpPost]
         [Route("login")]
-        public async Task<IActionResult> Login([FromForm] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var response = new Response();
             var user = await _userManager.FindByNameAsync(model.Username);

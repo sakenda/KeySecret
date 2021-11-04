@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using KeySecret.DataAccess.Library.Repositories;
+using System;
 
 namespace KeySecret.DataAccess.Controllers
 {
     // Toggle Authentification
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class CategoriesController : ControllerBase
     {
@@ -38,7 +40,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpGet("/api/categories/{id}")]
-        public async Task<ActionResult<CategoryModel>> GetByIdAsync(int id)
+        public async Task<ActionResult<CategoryModel>> GetByIdAsync(Guid id)
         {
             CategoryModel item = await _categoriesRepository.GetItemAsync(id);
 
@@ -78,7 +80,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpDelete("/api/categories/del/{id}")]
-        public ActionResult DeleteAccountAsync(int id)
+        public ActionResult DeleteAccountAsync(Guid id)
         {
             _categoriesRepository.DeleteItemAsync(id);
 

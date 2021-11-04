@@ -1,15 +1,16 @@
 ﻿using KeySecret.DataAccess.Library.Models;
-using KeySecret.DataAccess.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using KeySecret.DataAccess.Library.Repositories;
+using System;
 
 namespace KeySecret.DataAccess.Controllers
 {
     // Toggle Authentification
-    [Authorize]
+    //[Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -38,7 +39,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpGet("/api/accounts/{id}")]
-        public async Task<ActionResult<AccountModel>> GetByIdAsync(int id)
+        public async Task<ActionResult<AccountModel>> GetByIdAsync(Guid id)
         {
             AccountModel item = await _accountsRepository.GetItemAsync(id);
 
@@ -78,7 +79,7 @@ namespace KeySecret.DataAccess.Controllers
         }
 
         [HttpDelete("/api/accounts/del/{id}")]
-        public ActionResult DeleteAccountAsync(int id)
+        public ActionResult DeleteAccountAsync(Guid id)
         {
             _accountsRepository.DeleteItemAsync(id);
 

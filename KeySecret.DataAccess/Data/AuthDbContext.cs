@@ -3,9 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace KeySecret.DataAccess.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class AuthDbContext : IdentityDbContext<ApplicationUser>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public AuthDbContext(DbContextOptions<AuthDbContext> options)
             : base(options)
         {
         }

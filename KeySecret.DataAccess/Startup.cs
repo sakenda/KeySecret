@@ -1,7 +1,6 @@
 using KeySecret.DataAccess.Data;
 using KeySecret.DataAccess.Library.Models;
 using KeySecret.DataAccess.Library.Repositories;
-using KeySecret.DataAccess.Library;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -14,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using KeySecret.DataAccess.Library.Context;
 
 namespace KeySecret.DataAccess
 {
@@ -21,24 +21,24 @@ namespace KeySecret.DataAccess
     {
         public IConfiguration Configuration { get; }
         public ILoggerFactory LoggerFactory { get; private set; }
-        public string ConnectionString { get; set; }
 
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            ConnectionString = configuration.GetConnectionString("KeySecretData");
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Database provider
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(ConnectionString))
+            services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretAuth")));
+
+            services.AddDbContext<DataDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretData")))
                     .AddDatabaseDeveloperPageExceptionFilter();
 
             // Identity provider
             services.AddIdentity<ApplicationUser, IdentityRole>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddEntityFrameworkStores<AuthDbContext>()
                     .AddDefaultTokenProviders();
 
             // Token provider
@@ -62,11 +62,11 @@ namespace KeySecret.DataAccess
                         };
                     });
 
-            // Singletons
-            services.AddSingleton<IRepository<AccountModel>, AccountsRepository>(
-                        repository => new AccountsRepository(ConnectionString, LoggerFactory.CreateLogger<AccountsRepository>()))
-                    .AddSingleton<IRepository<CategoryModel>, CategoryRepository>(
-                        repository => new CategoryRepository(ConnectionString, LoggerFactory.CreateLogger<CategoryRepository>()));
+            // Class provider
+            //services.AddScoped<DataDbContext>();
+
+            services.AddTransient<IRepository<AccountModel>, AccountDataRepository>()
+                    .AddTransient<IRepository<CategoryModel>, CategoryDataRepository>();
 
             // Controllers
             services.AddControllersWithViews();
