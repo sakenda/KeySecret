@@ -28,9 +28,15 @@ namespace KeySecret.App.Library.DataAccess
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<IEnumerable<CategoryModel>>();
+                var result = await response.Content.ReadAsAsync<IEnumerable<CategoryDto>>();
+                var cList = new List<CategoryModel>();
 
-                return result;
+                foreach (var c in result)
+                {
+                    cList.Add(CategoryModel.DtoAsCategoryModel(c));
+                }
+
+                return cList;
             }
         }
 
@@ -40,16 +46,17 @@ namespace KeySecret.App.Library.DataAccess
         /// <param name="id">Die ID der Kategorie</param>
         /// <returns><see cref="CategoryModel"/></returns>
         /// <exception cref="Exception">Nicht erfolgreiche Abfrage</exception>
-        public async Task<CategoryModel> GetById(int id)
+        public async Task<CategoryModel> GetById(Guid id)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.GetAsync("api/categories/" + id))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<CategoryModel>();
+                var result = await response.Content.ReadAsAsync<CategoryDto>();
+                var category = CategoryModel.DtoAsCategoryModel(result);
 
-                return result;
+                return category;
             }
         }
 
@@ -59,14 +66,14 @@ namespace KeySecret.App.Library.DataAccess
         /// <param name="item"><see cref="CategoryModel"/> mit den Daten</param>
         /// <returns><see cref="CategoryModel"/></returns>
         /// <exception cref="Exception"></exception>
-        public async Task<CategoryModel> InsertAsync(CategoryModel item)
+        public async Task InsertAsync(CategoryModel item)
         {
-            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/categories/ins", item))
+            var category = item.AsDto();
+
+            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/categories/ins", category))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
-
-                return await response.Content.ReadAsAsync<CategoryModel>();
             }
         }
 
@@ -78,7 +85,9 @@ namespace KeySecret.App.Library.DataAccess
         /// <exception cref="Exception"></exception>
         public async Task UpdateAsync(CategoryModel item)
         {
-            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/categories/upd", item))
+            var category = item.AsDto();
+
+            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/categories/upd", category))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
@@ -91,7 +100,7 @@ namespace KeySecret.App.Library.DataAccess
         /// <param name="id"> ID des <see cref="CategoryModel"/> zum Löschen</param>
         /// <returns><see cref="NoContent"/></returns>
         /// <exception cref="Exception"></exception>
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.DeleteAsync("api/categories/del/" + id))
             {

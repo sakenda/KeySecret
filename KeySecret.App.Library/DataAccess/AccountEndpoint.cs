@@ -1,5 +1,6 @@
 ﻿using KeySecret.App.Library.Helper;
 using KeySecret.App.Library.Models;
+
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -27,13 +28,12 @@ namespace KeySecret.App.Library.DataAccess
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<IEnumerable<EndpointAccountModel>>();
+                var result = await response.Content.ReadAsAsync<IEnumerable<AccountDto>>();
                 var resultList = new List<AccountModel>();
 
                 foreach (var a in result)
                 {
-                    var account = new AccountModel(a.Name, a.WebAdress, a.Password, a.CreatedDate);
-                    account.SetId(a.Id);
+                    var account = AccountModel.DtoAsAccountModel(a);
                     resultList.Add(account);
                 }
 
@@ -45,16 +45,15 @@ namespace KeySecret.App.Library.DataAccess
         /// Abfrage eines AccountItems an die API
         /// </summary>
         /// <returns>Alle Accounteintrage der DB</returns>
-        public async Task<AccountModel> GetById(int id)
+        public async Task<AccountModel> GetById(Guid id)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.GetAsync("api/accounts/" + id))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
 
-                var result = await response.Content.ReadAsAsync<EndpointAccountModel>();
-                var account = new AccountModel(result.Name, result.WebAdress, result.Password, result.CreatedDate);
-                account.SetId(result.Id);
+                var result = await response.Content.ReadAsAsync<AccountDto>();
+                var account = AccountModel.DtoAsAccountModel(result);
 
                 return account;
             }
@@ -65,21 +64,14 @@ namespace KeySecret.App.Library.DataAccess
         /// </summary>
         /// <param name="item">Der Eintrag mit dem neuen Datensatz</param>
         /// <returns></returns>
-        public async Task<AccountModel> InsertAsync(AccountModel item)
+        public async Task InsertAsync(AccountModel item)
         {
-            if (item.Id != -1)
-                throw new ArgumentException("Id darf nicht größer als -1 sein");
+            var account = item.AsDto();
 
-            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/accounts/ins", item))
+            using (HttpResponseMessage response = await _apiHelper.Client.PostAsJsonAsync("api/accounts/ins", account))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
-
-                var result = await response.Content.ReadAsAsync<AccountModel>();
-                var account = new AccountModel(result.Name, result.WebAdress, result.Password, result.CreatedDate);
-                account.SetId(result.Id);
-
-                return account;
             }
         }
 
@@ -90,7 +82,9 @@ namespace KeySecret.App.Library.DataAccess
         /// <returns></returns>
         public async Task UpdateAsync(AccountModel item)
         {
-            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/accounts/upd", item))
+            var account = item.AsDto();
+
+            using (HttpResponseMessage response = await _apiHelper.Client.PutAsJsonAsync("api/accounts/upd", account))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
@@ -102,7 +96,7 @@ namespace KeySecret.App.Library.DataAccess
         /// </summary>
         /// <param name="item">Id des Accounts das zu löschen ist</param>
         /// <returns></returns>
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
             using (HttpResponseMessage response = await _apiHelper.Client.DeleteAsync("api/accounts/del/" + id))
             {

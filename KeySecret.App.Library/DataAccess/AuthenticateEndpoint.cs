@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Text;
+using System.Net.Http.Json;
 
 namespace KeySecret.App.Library.DataAccess
 {
@@ -39,14 +41,14 @@ namespace KeySecret.App.Library.DataAccess
 
         public async Task Authenticate(string username, string password)
         {
-            var data = new FormUrlEncodedContent(new[]
+            LoginModel user = new LoginModel()
             {
-                new KeyValuePair<string, string>("grant_type", "password"),
-                new KeyValuePair<string, string>("username", username),
-                new KeyValuePair<string, string>("password", password)
-            });
+                Username = username,
+                Password = password
+            };
 
-            using (HttpResponseMessage response = await _apiHelper.Client.PostAsync("/api/Authenticate/login/", data))
+            using (HttpResponseMessage response
+                = await _apiHelper.Client.PostAsJsonAsync("/api/Authenticate/login/", user))
             {
                 if (!response.IsSuccessStatusCode)
                     throw new Exception(response.ReasonPhrase);
