@@ -3,6 +3,7 @@ using KeySecret.App.Library.DataAccess;
 using KeySecret.App.Library.Helper;
 using KeySecret.App.Library.Models;
 using KeySecret.App.Web.Pages;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -23,13 +24,19 @@ namespace KeySecret.App.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddRazorPages();
+
             services.AddSingleton<IApiHelper, ApiHelper>()
                     .AddSingleton<IAuthenticateEndpoint, AuthenticateEndpoint>()
                     .AddSingleton<IEndpoint<CategoryModel>, CategoriesEndpoint>()
                     .AddSingleton<IEndpoint<AccountModel>, AccountEndpoint>()
+                    .AddSingleton<IEndpoint<CategoryModel>, CategoriesEndpoint>()
                     .AddSingleton<MainViewModel>();
 
-            services.AddRazorPages();
+            services.ConfigureApplicationCookie(config =>
+            {
+                config.LoginPath = "/Authentication/Login";
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

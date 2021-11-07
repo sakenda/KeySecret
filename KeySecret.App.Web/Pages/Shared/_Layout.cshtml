@@ -1,42 +1,50 @@
-﻿<!DOCTYPE html>
+﻿@using KeySecret.App.Web.Pages
+@using KeySecret.App.Web.Pages.Authentication
+@inject MainViewModel vm
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>@ViewData["Title"] - KeySecret.WebApp</title>
-    <!--link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link rel="stylesheet" href="~/css/site.css"/>
 </head>
 <body>
     <header>
-        <h1>keySECRET</h1>
+        <nav class="navbar sticky-top navbar-dark bg-dark">
+            <div class="container">
+                <div class="container-fluid">
+                    <span class="navbar-brand mb-0 h1">keySecret</span>
+                </div>
 
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                <ul class="navbar-nav flex-grow-1" style="list-style: none">
-                    <li class="nav-item" style="display: inline">
-                        <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                <ul class="nav">
+                    <li class="nav-item my-auto">
+                        <a class="nav-link" asp-page="/Index">Home</a>
                     </li>
 
-                    @if (!User.Identity.IsAuthenticated)
+                    @if (vm.CurrentUser.IsLoggedIn)
                     {
-                        <li class="nav-item" style="display: inline; margin: 20px;">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Authentication/Login">Login</a>
-                        </li>
-                        <li class="nav-item" style="display: inline">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Authentication/Register">Register</a>
-                        </li>
-                    }
-                    else
-                    {
-                        <li class="nav-item" style="display: inline">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Accounts/AccountsOverviewPage">Accounts overview</a>
-                        </li>
-                        <li class="nav-item" style="display: inline">
-                            <a class="nav-link text-dark" asp-area="" asp- asp-page="">Logout</a>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Accounts/AccountsOverviewPage">Accounts overview</a>
                         </li>
                     }
                 </ul>
+
+                @if (!vm.CurrentUser.IsLoggedIn)
+                {
+                    <form class="d-flex">
+                        <button class="btn btn-outline-primary" asp-page="/Authentication/Login">Login</button>
+                        <button class="btn btn-outline-secondary mx-2" asp-page="/Authentication/Register">Register</button>
+                    </form>
+                }
+                else
+                {
+                    <form class="d-flex">
+                        <button class="btn btn-outline-primary" asp-page="/Authentication/Logout">Logout</button>
+                    </form>
+                }
             </div>
         </nav>
     </header>
@@ -47,13 +55,13 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2021 - KeySecret.WebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        <div class="container-fluid">
+            &copy; 2021 - Michael Barth und Andreas Scheuer - Powered by Razor Pages</a>
         </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
