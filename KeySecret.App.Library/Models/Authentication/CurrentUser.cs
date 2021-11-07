@@ -9,12 +9,6 @@ namespace KeySecret.App.Library.Models
         public string Password { get; set; }
         public DateTime Expiration { get; set; }
 
-        public void ResetCurrentUser()
-        {
-            Token = string.Empty;
-            Username = string.Empty;
-            Password = string.Empty;
-            Expiration = DateTime.MinValue;
-        }
+        public bool IsLoggedIn => string.IsNullOrEmpty(Token) == false;
     }
 }

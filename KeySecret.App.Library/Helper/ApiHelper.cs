@@ -1,4 +1,5 @@
 ﻿using KeySecret.App.Library.Models;
+
 using System;
 using System.Configuration;
 using System.Net.Http;
@@ -12,7 +13,7 @@ namespace KeySecret.App.Library.Helper
         private CurrentUser _currentUser;
 
         public HttpClient Client => _client;
-        public CurrentUser LoggedInUser => _currentUser == null ? new CurrentUser() { Username = "Guest" } : _currentUser;
+        public CurrentUser CurrentUser => _currentUser == null ? new CurrentUser() { Username = "Guest" } : _currentUser;
 
         public ApiHelper()
         {

@@ -52,7 +52,8 @@ namespace KeySecret.DataAccess.Library.Repositories
 
             await _context.Accounts.AddAsync(item);
 
-            //_context.Entry(item.Category).State = EntityState.Detached;
+            if (item.Category != null)
+                _context.Entry(item.Category).State = EntityState.Detached;
 
             var result = await _context.SaveChangesAsync();
             if (result == 0)

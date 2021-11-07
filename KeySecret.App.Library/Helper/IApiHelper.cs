@@ -6,7 +6,7 @@ namespace KeySecret.App.Library.Helper
     public interface IApiHelper
     {
         HttpClient Client { get; }
-        CurrentUser LoggedInUser { get; }
+        CurrentUser CurrentUser { get; }
 
         void AddBearerToken(string token);
         void SetCurrentUser(CurrentUser user);

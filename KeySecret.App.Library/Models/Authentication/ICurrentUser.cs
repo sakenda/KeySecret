@@ -6,6 +6,6 @@
         string Username { get; set; }
         string Password { get; set; }
 
-        void ResetCurrentUser();
+        bool IsLoggedIn { get; }
     }
 }
