@@ -35,7 +35,7 @@ namespace KeySecret.App.Web.Pages
             InitializeViewModel();
         }
 
-        public async Task InitializeViewModel()
+        public async void InitializeViewModel()
         {
             AccountsList = new List<AccountModel>(await _accountEndpoint.GetAllAsync());
             CategoriesList = new List<CategoryModel>(await _categoryEndpoint.GetAllAsync());
