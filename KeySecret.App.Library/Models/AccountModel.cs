@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using System.Reflection;
 
 namespace KeySecret.App.Library.Models
 {
@@ -79,6 +78,33 @@ namespace KeySecret.App.Library.Models
                 Category = CategoryModel.DtoAsCategoryModel(dto.Category),
                 isDeleted = false,
                 ModifiedDate = dto.ModifiedDate
+            };
+        }
+
+        public AccountModelSelected AsAccountModelSelected()
+        {
+            return new AccountModelSelected()
+            {
+                Id = this.Id,
+                Name = this.Name,
+                WebAddress = this.WebAdress,
+                Password = this.Password,
+                CategoryId = this.Category == null ? null : this.Category.Id.ToString(),
+                isDeleted = this.isDeleted
+            };
+        }
+
+        public static AccountModel SelectedAsAccountModel(AccountModelSelected selected, CategoryModel category)
+        {
+            return new AccountModel()
+            {
+                Id = selected.Id,
+                Name = selected.Name,
+                WebAdress = selected.WebAddress,
+                Password = selected.Password,
+                Category = category,
+                isDeleted = selected.isDeleted,
+                ModifiedDate = DateTime.Now
             };
         }
     }
