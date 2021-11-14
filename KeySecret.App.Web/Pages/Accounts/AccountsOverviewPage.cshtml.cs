@@ -14,7 +14,7 @@ namespace KeySecret.App.Web.Pages.Accounts
     {
         public MainViewModel MainVM { get; }
 
-        [BindProperty] public AccountModel SelectedAccount { get; set; }
+        [BindProperty] public AccountModelSelected SelectedAccount { get; set; }
         [BindProperty] public List<SelectListItem> CategorySelectItems { get; set; }
         [BindProperty] public string SelectedCategory { get; set; }
 
@@ -37,35 +37,42 @@ namespace KeySecret.App.Web.Pages.Accounts
             }
         }
 
-        public async Task<IActionResult> OnPostSaveEntry()
+        public async Task<IActionResult> OnPostAdd()
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
 
-            Guid.TryParse(SelectedCategory, out Guid guidCategory);
-            await MainVM.CreateNewAccount(SelectedAccount, guidCategory);
+            await MainVM.CreateNewAccount(SelectedAccount);
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }
 
-        public async Task<IActionResult> OnPostUpdate(int counter)
+        public async Task<IActionResult> OnPostUpdate(Guid accountId)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+
+            SelectedAccount.Id = accountId;
+
+            await MainVM.UpdateAccount(SelectedAccount);
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }
 
-        public async Task<IActionResult> OnPostDelete(int counter)
+        public async Task<IActionResult> OnPostDelete(Guid accountId)
         {
             if (!ModelState.IsValid)
             {
                 return Page();
             }
+
+            SelectedAccount.Id = accountId;
+
+            await MainVM.DeleteAccount(SelectedAccount);
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }

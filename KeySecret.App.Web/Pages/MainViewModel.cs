@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 using KeySecret.App.Library;
@@ -40,28 +41,40 @@ namespace KeySecret.App.Web.Pages
             CategoriesList = new List<CategoryModel>(await _categoryEndpoint.GetAllAsync());
         }
 
-        public async Task CreateNewAccount(AccountModel model, Guid categoryId)
+        public async Task CreateNewAccount(AccountModelSelected model)
         {
-            CategoryModel category = null;
+            Guid.TryParse(model.CategoryId, out Guid categoryId);
 
+            CategoryModel category = null;
             if (categoryId != Guid.Empty)
                 category = await _categoryEndpoint.GetById(categoryId);
 
-            var account = new AccountModel(model.Name, model.Password, model.WebAdress, category);
+            var account = AccountModel.SelectedAsAccountModel(model, category);
+
             await _accountEndpoint.InsertAsync(account);
 
             AccountsList.Add(account);
         }
 
-        public async Task DeleteAccount(AccountModel account)
+        public async Task DeleteAccount(AccountModelSelected account)
         {
             await _accountEndpoint.DeleteAsync(account.Id);
-            AccountsList.Remove(account);
+
+            var rAccount = AccountsList.FirstOrDefault(a => a.Id == account.Id);
+            AccountsList.Remove(rAccount);
         }
 
-        public async Task UpdateAccount(AccountModel account)
+        public async Task UpdateAccount(AccountModelSelected account)
         {
-            await _accountEndpoint.UpdateAsync(account);
+            Guid.TryParse(account.CategoryId, out Guid categoryId);
+            var category = CategoriesList.FirstOrDefault(c => c.Id == categoryId);
+            var uAccount = AccountModel.SelectedAsAccountModel(account, category);
+
+            int index = AccountsList.FindIndex(a => a.Id == account.Id);
+            if (index != -1)
+                AccountsList[index] = uAccount;
+
+            await _accountEndpoint.UpdateAsync(uAccount);
         }
     }
 }

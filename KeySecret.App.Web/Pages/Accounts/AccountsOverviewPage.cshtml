@@ -6,61 +6,16 @@
 <div class="container-fluid mt-3">
 
     <!-- Add new Account -->
-    <!-- Button trigger modal window -->
     <div class="row justify-content-between">
         <div class="col-auto">
             <h4>Accounts Overview</h4>
         </div>
         <div class="col-auto">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#ModalWindow">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#InsertModalWindow">
                 Add new entry
             </button>
         </div>
     </div>
-
-    <!-- Modal window -->
-    <form method="post">
-        <div class="modal fade" id="ModalWindow" tabindex="-1" aria-labelledby="ModalWindowLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="ModalWindowLabel">New entry</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingName" placeholder="Name" asp-for="SelectedAccount.Name" required>
-                                <label for="floatingName" asp-for="SelectedAccount.Name">Name</label>
-                            </div>
-
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingAddress" placeholder="e.g. www.netflix.com" asp-for="SelectedAccount.WebAdress">
-                                <label for="floatingAddress" asp-for="SelectedAccount.WebAdress">Address</label>
-                            </div>
-
-                            <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingPassword" placeholder="Password" asp-for="SelectedAccount.Password" required>
-                                <label for="floatingPassword" asp-for="SelectedAccount.Password">Password</label>
-                            </div>
-
-                            <div class="form-floating mb-3">
-                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-items="Model.CategorySelectItems" asp-for="SelectedCategory">
-                                    <option selected>-- Choose category --</option>
-                                </select>
-                                <label for="floatingSelect">Category</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary" asp-page-handler="SaveEntry">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
 
     <!-- Accountslist -->
     <table class="table justify-content-md-center mt-3 align-center">
@@ -83,29 +38,123 @@
             @foreach (var account in Model.MainVM.AccountsList)
             {
                 counter++;
+                string ocl = "offcanvasBottomLabel" + counter;
+                string ocb = "offcanvasBottom" + counter;
 
                 <tr class="align-middle">
-                    <td class="cent" scope="row">@counter</td>
+                    <td scope="row">@counter</td>
                     <td>@account.Name</td>
                     <td>@account.WebAdress</td>
                     <td>@account.Password</td>
                     <td>@account.Category?.Name</td>
                     <td>
                         <div class="d-grip gap-2 d-md-flex justify-content-md-end">
+
+                            <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#@ocb" aria-controls="@ocb">
+                                Update
+                            </button>
+
                             <form asp-page-handler="Update" asp-route-counter="@counter" method="post">
-                                <button type="submit" class="btn btn-outline-primary me-1" data-bs-toggle="modal" data-bs-target="#ModalWindow">
-                                    Update
-                                </button>
+
+                                @{
+                                    Model.SelectedAccount = account.AsAccountModelSelected();
+                                }
+
+                                <div class="offcanvas offcanvas-start" tabindex="-1" id="@ocb" aria-labelledby="@ocl">
+                                    <div class="offcanvas-header">
+                                        <h5 class="offcanvas-title" id="@ocl">Update @Model.SelectedAccount.Name</h5>
+                                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                                    </div>
+                                    <div class="offcanvas-body small">
+
+                                        <div class="container-fluid">
+
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="floatingName" placeholder="Name" asp-for="@Model.SelectedAccount.Name" required>
+                                                <label for="floatingName" asp-for="@Model.SelectedAccount.Name">Name</label>
+                                            </div>
+
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="floatingAddress" placeholder="e.g. www.netflix.com" asp-for="@Model.SelectedAccount.WebAddress">
+                                                <label for="floatingAddress" asp-for="@Model.SelectedAccount.WebAddress">Address</label>
+                                            </div>
+
+                                            <div class="form-floating mb-3">
+                                                <input type="text" class="form-control" id="floatingPassword" placeholder="Password" asp-for="@Model.SelectedAccount.Password" required>
+                                                <label for="floatingPassword" asp-for="@Model.SelectedAccount.Password">Password</label>
+                                            </div>
+
+                                            <div class="form-floating mb-3">
+                                                <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-items="Model.CategorySelectItems" asp-for="@Model.SelectedAccount.CategoryId">
+                                                </select>
+                                                <label for="floatingSelect">Category</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary" asp-page-handler="Update" asp-route-accountId="@account.Id">Save changes</button>
+                                            <button type="submit" class="btn btn-warning" asp-page-handler="Delete">Delete</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
+
                             <form asp-page-handler="Delete" asp-route-counter="@counter" method="post">
                                 <button type="submit" class="btn btn-outline-warning">
                                     Delete
                                 </button>
                             </form>
+
                         </div>
                     </td>
                 </tr>
             }
+
+             <!-- Modal window ADD ACCOUNT -->
+            <form method="post">
+                <div class="modal fade" id="InsertModalWindow" tabindex="-1" aria-labelledby="InsertModalWindowLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="InsertModalWindowLabel">New entry</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingName" placeholder="Name" asp-for="SelectedAccount.Name" required>
+                                        <label for="floatingName" asp-for="SelectedAccount.Name">Name</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingAddress" placeholder="e.g. www.netflix.com" asp-for="SelectedAccount.WebAddress">
+                                        <label for="floatingAddress" asp-for="SelectedAccount.WebAddress">Address</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingPassword" placeholder="Password" asp-for="SelectedAccount.Password" required>
+                                        <label for="floatingPassword" asp-for="SelectedAccount.Password">Password</label>
+                                    </div>
+
+                                    <div class="form-floating mb-3">
+                                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-items="Model.CategorySelectItems" asp-for="SelectedCategory">
+                                            <option selected>-- Choose category --</option>
+                                        </select>
+                                        <label for="floatingSelect">Category</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" asp-page-handler="Add">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
         </tbody>
     </table>
 </div>
