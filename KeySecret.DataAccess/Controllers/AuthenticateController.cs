@@ -1,5 +1,6 @@
-﻿using KeySecret.DataAccess.Data;
+﻿using KeySecret.DataAccess.Library.Data;
 using KeySecret.DataAccess.Library.Models;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -36,6 +38,11 @@ namespace KeySecret.DataAccess.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get authentication for the user.
+        /// </summary>
+        /// <param name="model">Credencials send as json serialized as <see cref="LoginModel"/>.</param>
+        /// <returns><seealso cref="OkResult"/>(<see cref="LoginModel"/>) with token when valid, else <seealso cref="UnauthorizedResult"/></returns>
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -70,6 +77,11 @@ namespace KeySecret.DataAccess.Controllers
             return Ok(model);
         }
 
+        /// <summary>
+        /// Register a new user
+        /// </summary>
+        /// <param name="model">Registerinfo's send as json serialized as <see cref="RegisterModel"/>.</param>
+        /// <returns><seealso cref="OkResult"/> on success, else <seealso cref="StatusCodes.Status500InternalServerError"/></returns>
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -110,6 +122,12 @@ namespace KeySecret.DataAccess.Controllers
             return Ok(response);
         }
 
+        /// <summary>
+        /// Retrieves credencials from database and create a token
+        /// </summary>
+        /// <param name="model"><see cref="LoginModel"/> from the user</param>
+        /// <param name="user"><see cref="ApplicationUser"/> if found on database</param>
+        /// <returns></returns>
         private async Task GetUserCredencials(LoginModel model, ApplicationUser user)
         {
             var userRoles = await _userManager.GetRolesAsync(user);

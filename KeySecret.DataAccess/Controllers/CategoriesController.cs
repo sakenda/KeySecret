@@ -1,5 +1,4 @@
 ﻿using KeySecret.DataAccess.Library.Models;
-using KeySecret.DataAccess.Library;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -10,7 +9,9 @@ using System;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    // Toggle Authentification
+    /// <summary>
+    /// <see cref="CategoryModel"/> endpoints of the api.
+    /// </summary>
     //[Authorize]
     [ApiController]
     public class CategoriesController : ControllerBase
@@ -24,6 +25,10 @@ namespace KeySecret.DataAccess.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get all <see cref="CategoryModel"/> from the database.
+        /// </summary>
+        /// <returns><seealso cref="IEnumerable{T}"/> if found, else <seealso cref="NotFoundResult"/>.</returns>
         [HttpGet("/api/categories")]
         public async Task<ActionResult<IEnumerable<CategoryModel>>> GetAllCategoriesAsync()
         {
@@ -39,6 +44,11 @@ namespace KeySecret.DataAccess.Controllers
             return Ok(list);
         }
 
+        /// <summary>
+        /// Get a <see cref="CategoryModel"/> by id.
+        /// </summary>
+        /// <param name="id">Id as <seealso cref="Guid"/></param>
+        /// <returns><see cref="CategoryModel"/> if found, else <see cref="NotFoundResult"/>.</returns>
         [HttpGet("/api/categories/{id}")]
         public async Task<ActionResult<CategoryModel>> GetByIdAsync(Guid id)
         {
@@ -54,6 +64,11 @@ namespace KeySecret.DataAccess.Controllers
             return Ok(item);
         }
 
+        /// <summary>
+        /// Insert a new <see cref="CategoryModel"/> into the database.
+        /// </summary>
+        /// <param name="account">The serialized json as <see cref="CategoryModel"/>.</param>
+        /// <returns><seealso cref="CreatedAtActionResult"/> on success, else <seealso cref="BadRequestResult"/>.</returns>
         [HttpPost("/api/categories/ins")]
         public async Task<ActionResult<CategoryModel>> InsertCategoryAsync([FromBody] CategoryModel category)
         {
@@ -69,6 +84,11 @@ namespace KeySecret.DataAccess.Controllers
             return CreatedAtAction(nameof(InsertCategoryAsync), item);
         }
 
+        /// <summary>
+        /// Updates a <see cref="CategoryModel"/>.
+        /// </summary>
+        /// <param name="account">The serialized json as <see cref="CategoryModel"/>.</param>
+        /// <returns><seealso cref="NoContentResult"/></returns>
         [HttpPut("/api/categories/upd")]
         public ActionResult UpdateCategoryAsync([FromBody] CategoryModel category)
         {
@@ -79,6 +99,11 @@ namespace KeySecret.DataAccess.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a <see cref="CategoryModel"/> from the database
+        /// </summary>
+        /// <param name="id">Id as <seealso cref="Guid"/></param>
+        /// <returns><seealso cref="NoContentResult"/></returns>
         [HttpDelete("/api/categories/del/{id}")]
         public ActionResult DeleteAccountAsync(Guid id)
         {

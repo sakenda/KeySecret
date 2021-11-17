@@ -9,7 +9,9 @@ using System;
 
 namespace KeySecret.DataAccess.Controllers
 {
-    // Toggle Authentification
+    /// <summary>
+    /// <see cref="AccountModel"/> endpoints of the api.
+    /// </summary>
     //[Authorize]
     [ApiController]
     public class AccountsController : ControllerBase
@@ -23,67 +25,120 @@ namespace KeySecret.DataAccess.Controllers
             _logger = logger;
         }
 
+        /// <summary>
+        /// Get all <see cref="AccountModel"/> from the database.
+        /// </summary>
+        /// <returns><seealso cref="IEnumerable{T}"/> if found, else <seealso cref="NotFoundResult"/>.</returns>
         [HttpGet("/api/accounts")]
         public async Task<ActionResult<IEnumerable<AccountModel>>> GetAllAccountsAsync()
         {
+            var response = new Response();
             IEnumerable<AccountModel> list = await _accountsRepository.GetItemsAsync();
 
             if (list == null)
             {
-                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
-                return NotFound(nameof(InsertAccountAsync) + ": NULL-Object returned");
+                response.Status = "Not Found";
+                response.Message = "Return from the repository was NULL";
+                _logger.LogError(response.Status + ": " + response.Message + $" ({nameof(GetAllAccountsAsync)})");
+
+                return NotFound(response);
             }
 
-            _logger.LogInformation($"Es wurde eine Liste aller Accounts angefordert. {((List<AccountModel>)list).Count} Accounts wurden zurückgegeben.");
+            response.Status = "Ok";
+            response.Message = $"Returned {((List<AccountModel>)list).Count} items";
+            _logger.LogInformation(response.Status + ": " + response.Message + $" ({nameof(GetAllAccountsAsync)})");
+
             return Ok(list);
         }
 
+        /// <summary>
+        /// Get a <see cref="AccountModel"/> by id.
+        /// </summary>
+        /// <param name="id">Id as <seealso cref="Guid"/></param>
+        /// <returns><see cref="AccountModel"/> if found, else <see cref="NotFoundResult"/>.</returns>
         [HttpGet("/api/accounts/{id}")]
         public async Task<ActionResult<AccountModel>> GetByIdAsync(Guid id)
         {
+            var response = new Response();
             AccountModel item = await _accountsRepository.GetItemAsync(id);
 
             if (item == null)
             {
-                _logger.LogError("Fehler bei der Rückgabe. Objekt 'list' ist NULL");
-                return NotFound(nameof(InsertAccountAsync) + ": NULL-Object returned");
+                response.Status = "Not Found";
+                response.Message = "Return from the repository was NULL";
+
+                _logger.LogError(response.Status + ": " + response.Message + $" ({nameof(GetByIdAsync)})");
+                return NotFound(response);
             }
 
-            _logger.LogInformation($"Der Account mit der ID {id} wurd angefordert.");
+            response.Status = "Ok";
+            response.Message = $"Account with ID {id} returned.";
+
+            _logger.LogInformation(response.Status + ": " + response.Message + $" ({nameof(GetByIdAsync)})");
             return Ok(item);
         }
 
+        /// <summary>
+        /// Insert a new <see cref="AccountModel"/> into the database.
+        /// </summary>
+        /// <param name="account">The serialized json as <see cref="AccountModel"/>.</param>
+        /// <returns><seealso cref="CreatedAtActionResult"/> on success, else <seealso cref="BadRequestResult"/>.</returns>
         [HttpPost("/api/accounts/ins")]
         public async Task<ActionResult<AccountModel>> InsertAccountAsync([FromBody] AccountModel account)
         {
+            var response = new Response();
             AccountModel model = await _accountsRepository.InsertItemAsync(account);
 
             if (model == null)
             {
-                _logger.LogError("Fehler bei der Rückgabe. Objekt 'model' ist NULL");
-                return BadRequest(nameof(InsertAccountAsync) + ": NULL-Object returned");
+                response.Status = "Bad request";
+                response.Message = "Return from the repository was NULL";
+
+                _logger.LogError(response.Status + ": " + response.Message + $" ({nameof(InsertAccountAsync)})");
+                return BadRequest(response);
             }
 
-            _logger.LogInformation("Es wurde ein Eintrag in die Datenbank geschrieben.");
-            return CreatedAtAction(nameof(InsertAccountAsync), model);
+            response.Status = "Ok";
+            response.Message = "Successfully created an item";
+
+            _logger.LogInformation(response.Status + ": " + response.Message + $" ({nameof(InsertAccountAsync)})");
+            return CreatedAtAction(nameof(InsertAccountAsync), response);
         }
 
+        /// <summary>
+        /// Updates a <see cref="AccountModel"/>.
+        /// </summary>
+        /// <param name="account">The serialized json as <see cref="AccountModel"/>.</param>
+        /// <returns><seealso cref="NoContentResult"/></returns>
         [HttpPut("/api/accounts/upd")]
         public ActionResult UpdateAccountAsync([FromBody] AccountModel account)
         {
+            var response = new Response();
+
             _accountsRepository.UpdateItemAsync(account);
 
-            _logger.LogInformation($"Account wurde aktualisiert.");
+            response.Status = "No content";
+            response.Message = $"Account {account.AccountId} updated";
+            _logger.LogInformation(response.Status + ": " + response.Message + $" ({nameof(UpdateAccountAsync)})");
 
             return NoContent();
         }
 
+        /// <summary>
+        /// Deletes a <see cref="AccountModel"/> from the database
+        /// </summary>
+        /// <param name="id">Id as <seealso cref="Guid"/></param>
+        /// <returns><seealso cref="NoContentResult"/></returns>
         [HttpDelete("/api/accounts/del/{id}")]
         public ActionResult DeleteAccountAsync(Guid id)
         {
+            var response = new Response();
+
             _accountsRepository.DeleteItemAsync(id);
 
-            _logger.LogInformation($"Account mit der ID {id} wurde gelöscht.");
+            response.Status = "No content";
+            response.Message = $"Account {id} deleted";
+            _logger.LogInformation(response.Status + ": " + response.Message + $" ({nameof(DeleteAccountAsync)})");
 
             return NoContent();
         }
