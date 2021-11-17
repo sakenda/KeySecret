@@ -1,4 +1,5 @@
-﻿using KeySecret.App.Library.Helper;
+﻿using KeySecret.App.Library.Models;
+
 using System.Threading.Tasks;
 
 namespace KeySecret.App.Library.DataAccess
