@@ -1,4 +1,4 @@
-using KeySecret.DataAccess.Data;
+using KeySecret.DataAccess.Library.Data;
 using KeySecret.DataAccess.Library.Models;
 using KeySecret.DataAccess.Library.Repositories;
 
@@ -12,8 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+
 using System.Text;
-using KeySecret.DataAccess.Library.Context;
 
 namespace KeySecret.DataAccess
 {
@@ -31,9 +31,8 @@ namespace KeySecret.DataAccess
         public void ConfigureServices(IServiceCollection services)
         {
             // Database provider
-            services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretAuth")));
-
-            services.AddDbContext<DataDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretData")))
+            services.AddDbContext<AuthDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretAuth")))
+                    .AddDbContext<DataDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("KeySecretData")))
                     .AddDatabaseDeveloperPageExceptionFilter();
 
             // Identity provider
@@ -62,9 +61,7 @@ namespace KeySecret.DataAccess
                         };
                     });
 
-            // Class provider
-            //services.AddScoped<DataDbContext>();
-
+            // Dependency provider
             services.AddTransient<IRepository<AccountModel>, AccountDataRepository>()
                     .AddTransient<IRepository<CategoryModel>, CategoryDataRepository>();
 

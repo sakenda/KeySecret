@@ -1,4 +1,4 @@
-﻿using KeySecret.DataAccess.Library.Context;
+﻿using KeySecret.DataAccess.Library.Data;
 using KeySecret.DataAccess.Library.Models;
 
 using Microsoft.EntityFrameworkCore;

@@ -1,7 +1,8 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace KeySecret.DataAccess.Library.Migrations
+namespace KeySecret.DataAccess.Library.Data.Migrations
 {
     public partial class InitialCreate : Migration
     {

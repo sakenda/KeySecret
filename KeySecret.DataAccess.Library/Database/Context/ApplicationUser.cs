@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace KeySecret.DataAccess.Data
+namespace KeySecret.DataAccess.Library.Data
 {
     public class ApplicationUser : IdentityUser
     {

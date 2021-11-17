@@ -1,7 +1,8 @@
 ﻿using KeySecret.DataAccess.Library.Models;
+
 using Microsoft.EntityFrameworkCore;
 
-namespace KeySecret.DataAccess.Library.Context
+namespace KeySecret.DataAccess.Library.Data
 {
     public class DataDbContext : DbContext
     {

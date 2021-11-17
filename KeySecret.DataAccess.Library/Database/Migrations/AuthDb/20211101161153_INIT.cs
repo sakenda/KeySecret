@@ -1,7 +1,8 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace KeySecret.DataAccess.Migrations
+namespace KeySecret.DataAccess.Library.Data.Migrations
 {
     public partial class INIT : Migration
     {
