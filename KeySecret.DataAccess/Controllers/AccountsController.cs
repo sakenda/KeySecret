@@ -1,11 +1,12 @@
 ﻿using KeySecret.DataAccess.Library.Models;
-using Microsoft.AspNetCore.Authorization;
+using KeySecret.DataAccess.Library.Repositories;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using KeySecret.DataAccess.Library.Repositories;
-using System;
 
 namespace KeySecret.DataAccess.Controllers
 {

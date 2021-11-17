@@ -15,6 +15,7 @@ namespace KeySecret.App.Web.Pages.Accounts
         public MainViewModel MainVM { get; }
 
         [BindProperty] public AccountModelSelected SelectedAccount { get; set; }
+        [BindProperty] public string NewCategoryName { get; set; }
         [BindProperty] public List<SelectListItem> CategorySelectItems { get; set; }
         [BindProperty] public string SelectedCategory { get; set; }
 
@@ -26,6 +27,7 @@ namespace KeySecret.App.Web.Pages.Accounts
         public void OnGet()
         {
             InitializeCategoryOptions();
+            SelectedAccount = null;
         }
 
         private void InitializeCategoryOptions()
@@ -45,6 +47,7 @@ namespace KeySecret.App.Web.Pages.Accounts
             }
 
             await MainVM.CreateNewAccount(SelectedAccount);
+            SelectedAccount = null;
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }
@@ -59,6 +62,7 @@ namespace KeySecret.App.Web.Pages.Accounts
             SelectedAccount.Id = accountId;
 
             await MainVM.UpdateAccount(SelectedAccount);
+            SelectedAccount = null;
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }
@@ -73,8 +77,23 @@ namespace KeySecret.App.Web.Pages.Accounts
             SelectedAccount.Id = accountId;
 
             await MainVM.DeleteAccount(SelectedAccount);
+            SelectedAccount = null;
 
             return RedirectToPage("/Accounts/AccountsOverviewPage");
         }
+
+        public async Task<IActionResult> OnPostAddCategory()
+        {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
+            await MainVM.CreateNewCategory(NewCategoryName);
+            NewCategoryName = null;
+
+            return RedirectToPage("/Accounts/AccountsOverviewPage");
+        }
+
     }
 }

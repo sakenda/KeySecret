@@ -11,8 +11,11 @@
             <h4>Accounts Overview</h4>
         </div>
         <div class="col-auto">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#InsertModalCategoryWindow">
+                + Category
+            </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#InsertModalWindow">
-                Add new entry
+                + Account
             </button>
         </div>
     </div>
@@ -51,7 +54,7 @@
                         <div class="d-grip gap-2 d-md-flex justify-content-md-end">
 
                             <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#@ocb" aria-controls="@ocb">
-                                Update
+                                Edit
                             </button>
 
                             <form asp-page-handler="Update" asp-route-counter="@counter" method="post">
@@ -90,20 +93,13 @@
                                                 <label for="floatingSelect">Category</label>
                                             </div>
                                         </div>
-                                        
+
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                             <button type="submit" class="btn btn-primary" asp-page-handler="Update" asp-route-accountId="@account.Id">Save changes</button>
-                                            <button type="submit" class="btn btn-warning" asp-page-handler="Delete">Delete</button>
+                                            <button type="submit" class="btn btn-warning" asp-page-handler="Delete" asp-route-accountId="@account.Id">Delete</button>
                                         </div>
                                     </div>
                                 </div>
-                            </form>
-
-                            <form asp-page-handler="Delete" asp-route-counter="@counter" method="post">
-                                <button type="submit" class="btn btn-outline-warning">
-                                    Delete
-                                </button>
                             </form>
 
                         </div>
@@ -111,13 +107,16 @@
                 </tr>
             }
 
-             <!-- Modal window ADD ACCOUNT -->
+            <!-- Modal window ADD ACCOUNT -->
             <form method="post">
+                @{
+                    Model.SelectedAccount = null;
+                }
                 <div class="modal fade" id="InsertModalWindow" tabindex="-1" aria-labelledby="InsertModalWindowLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="InsertModalWindowLabel">New entry</h5>
+                                <h5 class="modal-title" id="InsertModalWindowLabel">New account</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
@@ -148,7 +147,35 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="submit" class="btn btn-primary" asp-page-handler="Add">Save changes</button>
+                                <button type="submit" class="btn btn-primary" asp-page-handler="Add">Add</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Modal window ADD CATEGORY -->
+            <form method="post">
+                <div class="modal fade" id="InsertModalCategoryWindow" tabindex="-1" aria-labelledby="InsertModalCategoryWindowLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="InsertModalCategoryWindowLabel">New category</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="container-fluid">
+
+                                    <div class="form-floating mb-3">
+                                        <input type="text" class="form-control" id="floatingName" placeholder="Name" asp-for="NewCategoryName" required>
+                                        <label for="floatingName" asp-for="NewCategoryName">Name</label>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary" asp-page-handler="AddCategory">Add</button>
                             </div>
                         </div>
                     </div>

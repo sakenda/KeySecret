@@ -76,5 +76,14 @@ namespace KeySecret.App.Web.Pages
 
             await _accountEndpoint.UpdateAsync(uAccount);
         }
+
+        public async Task CreateNewCategory(string name)
+        {
+            var category = new CategoryModel(name);
+
+            await _categoryEndpoint.InsertAsync(category);
+
+            CategoriesList.Add(category);
+        }
     }
 }
